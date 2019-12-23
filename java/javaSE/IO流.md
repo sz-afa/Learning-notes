@@ -15,7 +15,8 @@
 
     ```java
     int read() 
-    讲解：从输⼊流中读取单个字节,返回0到255范围内的int字节值,字节数据可直接转换为int类型, 如果已经到达流末尾⽽没有可⽤的字节，则返回－1
+    讲解：从输⼊流中读取单个字节,返回0到255范围内的int字节值,字节数据可直接转换为int类型, 
+    如果已经到达流末尾⽽没有可⽤的字节，则返回－1
 
     int read(byte[] buf)
     讲解：从输⼊流中读取⼀定数量的字节，并将其存储在缓冲区数组buf中,返回实际读取的字节
@@ -40,20 +41,60 @@
         //传⼊⽂件对象
         public FileInputStream(File file) throws FileNotFoundException
         ```
-
-        案例
+        单字节读取案例
         ```java
-            String dir = "D:\\";
-            String name = "a.txt";
-            File file = new File(dir,name);
-            InputStream is = new FileInputStream(file);
-            
-            //对于占一个字节的ASCII的字符 可以正常读取，对于汉字等unicode的字符不能正常读取，只能以乱码形式显示
-            int read = is.read();
-            System.out.println(read);
-            System.out.println((char)read);
-            is.close();
+        String dir = "D:\\";
+        String name = "a.txt";
+        File file = new File(dir,name);
+        InputStream is = new FileInputStream(file);
+        
+        //对于占一个字节的ASCII的字符 可以正常读取，对于汉字等unicode的字符不能正常读取，只能以乱码形式显示
+        int read = is.read();
+        System.out.println(read);
+        System.out.println((char)read);
+        is.close();
         ```
-    
+        缓冲读取案例
+        ```java
+        String dir = "D:\\";
+        String name = "a.txt";
+        File file = new File(dir,name);
+        InputStream is = new FileInputStream(file);
+        //字节数组缓冲buf,若buf长度为0则不读取任何字节并返回0;
+        //每次读取的字节数最多等于buf长度
+        //读取中文容易乱码，因为中文的字节可能会被截断
+        byte[] buf = new byte[1024];
+        //从流中读取的字节数
+        int length;
+        while ((length = is.read(buf))!=-1){
+            //打印读取结果
+            System.out.print(new String(buf,0,length));
+        }
+        is.close();
+        ```
+        字节流读取中文不乱码
+        ```java
+        String dir = "D:\\";
+        String name = "a.txt";
+        File file = new File(dir,name);
+        InputStream is = new FileInputStream(file);
+        //字节数组缓冲buf的长度设置为流的大小
+        byte[] buf = new byte[is.available()];
+        //从流中读取的字节数
+        int length;
+        while ((length = is.read(buf))!=-1){
+            //打印读取结果 不会乱码，注意编码格式一致
+            System.out.print(new String(buf,0,length,"UTF-8"));
+        }
+        is.close();
+        ```
+        *** 编码小知识(节省空间) ***
+            GB2312只支持简体中文，中文占2个字节，英文占1个字节
+            GBK中英文都占2个字节
+            UTF-8中文占用3个字节,英文占1个字节
+            若文本中文多则推荐GBK、GB2312的方式存储
 
+
+
+3. 3
 
