@@ -20,7 +20,7 @@ https://baike.baidu.com/item/%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/86397?fr=aladd
 ```java
 String dir="D:\\";
 String name="a.txt";
-File file=newFile(dir,name);
+File file=new File(dir,name);
 
 //⽂件的查询和判断
 System.out.println("当前系统路径分隔符:"+File.separator);
@@ -41,22 +41,22 @@ System.out.println("⽂件或⽬录是否存在exists()="+file.exists());
 System.out.println("⽬录中的⽂件和⽬录的名称所组成字符串数组list()");
 
 //输出文件夹所有文件
-File dirFile=newFile(dir);
+File dirFile=new File(dir);
 String[] arr=dirFile.list();
 for(String temp : arr){
     System.out.println(temp);
 }
 //创建指定的⽬录
-File mkdirFile=newFile(dir+"/testdir");
+File mkdirFile=new File(dir+"/testdir");
 mkdirFile.mkdir();
 //删除指定的⽬录
 mkdirFile.delete();
 
 //创建多个层级的⽬录
-File mkdirsFile=newFile(dir+"/testdirs/test/dd");
+File mkdirsFile=new File(dir+"/testdirs/test/dd");
 mkdirsFile.mkdirs();
 //创建⼀个新的⽂件
-File newFile=newFile(dir+"/testdir/newfile1.txt");
+File newFile=new File(dir+"/testdir/newfile1.txt");
 try{
     newFile.createNewFile();
 }catch(IOExceptione){
