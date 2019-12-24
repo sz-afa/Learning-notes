@@ -157,7 +157,7 @@
     - BufferedInputStream 和 BufferedOutputStream
     - 采用包装设计模式（锦上添花）
 4. BufferInputStream 缓冲字节输入流:
-    - BufferedInputStream 通过预先读入一整段原始输入流数据⾄缓冲区中，⽽外界对BufferedInputStream的读取操作实际上是在缓冲区上进行，如果读取的数据超过了缓冲区的范围，那么BufferedInputStream负责重新从原始输入流中载入下一截数据填充缓冲区，然后外界继续通过缓冲区进行数据读取。
+    - BufferedInputStream 通过预先读入一整段原始输入流数据⾄缓冲区中，而外界对BufferedInputStream的读取操作实际上是在缓冲区上进行，如果读取的数据超过了缓冲区的范围，那么BufferedInputStream负责重新从原始输入流中载入下一截数据填充缓冲区，然后外界继续通过缓冲区进行数据读取。
     - 好处：避免了大量的磁盘IO，原始的InputStream类实现的read是即时读取的，每一次读取都会是一次磁盘IO操作（哪怕只读取了1个字节的数据），如果数据量巨大，这样的磁盘消耗⾮常可怕。
     - 缓冲区的实现: 读取可以读取缓冲区中的内容，当读取超过缓冲区的内容后再进行一次磁盘IO，载入一段数据填充缓冲，下一次读取一般情况就直接可以从缓冲区读取，减少了磁盘IO。
     - 默认缓冲区大小是8k, int DEFAULT_BUFFER_SIZE = 8192;
