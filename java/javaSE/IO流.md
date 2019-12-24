@@ -12,7 +12,6 @@
 
 ## InputStream
 1. InputStream是输⼊字节流的⽗类，它是⼀个抽象类（⼀般⽤他的⼦类）:
-
     ```java
     int read() 
     讲解：从输⼊流中读取单个字节,返回0到255范围内的int字节值,字节数据可直接转换为int类型, 
@@ -54,7 +53,7 @@
         System.out.println((char)read);
         is.close();
         ```
-        缓冲读取案例
+        缓冲读取文件案例(读取中文会乱码)
         ```java
         String dir = "D:\\";
         String name = "a.txt";
@@ -72,7 +71,7 @@
         }
         is.close();
         ```
-        字节流读取中文不乱码
+        缓冲读取文本(中文不乱码)
         ```java
         String dir = "D:\\";
         String name = "a.txt";
@@ -88,13 +87,64 @@
         }
         is.close();
         ```
-        *** 编码小知识(节省空间) ***
-            GB2312只支持简体中文，中文占2个字节，英文占1个字节
-            GBK中英文都占2个字节
-            UTF-8中文占用3个字节,英文占1个字节
-            若文本中文多则推荐GBK、GB2312的方式存储
+        ***编码小知识(节省空间)***
+            <br>GB2312只支持简体中文，中文占2个字节，英文占1个字节
+            <br>GBK中英文都占2个字节
+            <br>UTF-8中文占用3个字节,英文占1个字节
+            <br>若文本中文多则推荐GBK、GB2312的方式存储
+
+    - ByteArrayInputStream 字节数组输⼊流
+    - ObjectInputStream 对象输⼊流
 
 
 
-3. 3
+## OutputStream
+1. OutputSteam是输出字节流的父类，他说一个抽象类
+    ```java
+    void write(int b)
+    讲解：将指定的字节写⼊输出流
+
+    void write(byte[] b)throws IOException
+    讲解：将b.length个字节的byte数组写⼊当前输出流
+
+    void flush() throws IOException
+    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊
+    ⽂件，但是⼀般还有⼀部分有可能会留在内存这个缓冲区中, 所以需要调⽤flush空缓冲区数据。
+
+    void close() throws IOException
+    讲解：关闭输⼊流并释放与该流关联的系统资源
+    ```
+2. 常见子类: 
+    - FileOutputStream:
+        构造函数
+        ```java
+        //传⼊输出的⽂件地址
+        public FileOutputStream(String name)
+        //传⼊⽬标输出的⽂件对象
+        public FileOutputStream(File file)
+        //传⼊⽬标输出的⽂件对象, 是否可以追加内容
+        public FileOutputStream(File file, boolean append)
+        ```
+        写入文件案例
+        ```java
+        String dir = "D:\\";
+        String name = "b.txt";
+        byte[] bytes = "我是内容".getBytes("UTF-8");
+        //若文件不存在会自动创建
+        OutputStream os = new FileOutputStream(dir+name);
+        os.write(bytes);
+        os.flush();
+        os.close();
+        ```
+        文件追加数据案例
+        ```java
+        String dir = "D:\\";
+        String name = "b.txt";
+        byte[] bytes = "我是内容2".getBytes("UTF-8");
+        //写入的内容不覆盖原文件，只在原文件的末尾追加数据
+        OutputStream os = new FileOutputStream(dir+name,true);
+        os.write(bytes);
+        os.flush();
+        os.close();
+        ```
 
