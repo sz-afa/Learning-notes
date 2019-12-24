@@ -108,7 +108,7 @@
     讲解：将b.length个字节的byte数组写入当前输出流
 
     void flush() throws IOException
-    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写入
+    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会自动将缓冲区的内容写入
     文件，但是一般还有一部分有可能会留在内存这个缓冲区中, 所以需要调用flush空缓冲区数据。
 
     void close() throws IOException
@@ -157,16 +157,16 @@
     - BufferedInputStream 和 BufferedOutputStream
     - 采用包装设计模式（锦上添花）
 4. BufferInputStream 缓冲字节输入流:
-    - BufferedInputStream 通过预先读入一整段原始输入流数据⾄缓冲区中，⽽外界对BufferedInputStream的读取操作实际上是在缓冲区上进⾏，如果读取的数据超过了缓冲区的范围，那么BufferedInputStream负责重新从原始输入流中载入下一截数据填充缓冲区，然后外界继续通过缓冲区进⾏数据读取。
+    - BufferedInputStream 通过预先读入一整段原始输入流数据⾄缓冲区中，⽽外界对BufferedInputStream的读取操作实际上是在缓冲区上进行，如果读取的数据超过了缓冲区的范围，那么BufferedInputStream负责重新从原始输入流中载入下一截数据填充缓冲区，然后外界继续通过缓冲区进行数据读取。
     - 好处：避免了大量的磁盘IO，原始的InputStream类实现的read是即时读取的，每一次读取都会是一次磁盘IO操作（哪怕只读取了1个字节的数据），如果数据量巨大，这样的磁盘消耗⾮常可怕。
-    - 缓冲区的实现: 读取可以读取缓冲区中的内容，当读取超过缓冲区的内容后再进⾏一次磁盘IO，载入一段数据填充缓冲，下一次读取一般情况就直接可以从缓冲区读取，减少了磁盘IO。
+    - 缓冲区的实现: 读取可以读取缓冲区中的内容，当读取超过缓冲区的内容后再进行一次磁盘IO，载入一段数据填充缓冲，下一次读取一般情况就直接可以从缓冲区读取，减少了磁盘IO。
     - 默认缓冲区大小是8k, int DEFAULT_BUFFER_SIZE = 8192;
     - 常见构造函数:
         ```java
-        //对输入流进⾏包装，里面默认的缓冲区是8k
+        //对输入流进行包装，里面默认的缓冲区是8k
         public BufferedInputStream(InputStream in);
 
-        //对输入流进⾏包装,指定创建具有指定缓冲区大小的
+        //对输入流进行包装,指定创建具有指定缓冲区大小的
         public BufferedInputStream(InputStream in,int size);
         ```
     - 常⽤的方法
@@ -183,10 +183,10 @@
 5. BufferedOutputStream 缓冲字节输出流:
     - 常见构造器:
         ```java
-        //对输出流进⾏包装,里面默认的缓冲区是8k
+        //对输出流进行包装,里面默认的缓冲区是8k
         public BufferedOutputStream(OutputStream out);
 
-        //对输出流进⾏包装,指定创建具有指定缓冲区大小的
+        //对输出流进行包装,指定创建具有指定缓冲区大小的
         public BufferedOutputStream(OutputStream out,int size);
         ```
     - 常用的3个方法:
@@ -200,7 +200,7 @@
         //刷新此缓冲的输出流，强制使所有缓冲的输出字节被写出到底层输出流中。
         public void flush();
 
-        //关闭释放资源，关闭的时候这个流即可，OutputStream会在里面被关闭, JDK7新特性try(在这里声明的会⾃动关闭){}
+        //关闭释放资源，关闭的时候这个流即可，OutputStream会在里面被关闭, JDK7新特性try(在这里声明的会自动关闭){}
         void close();
         ```
 6. Buffer输入输出流实战
