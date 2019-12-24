@@ -2,7 +2,7 @@
 ## 区分斜杠
 
 ##### 1、斜杠："/"与反斜杠："\\"
-##### 2、反斜杠（\）是一个特殊的字符，被称为转义字符，用来转义后面一个字符。转义后的字符通常用于表示一个不可⻅的字符或具有特殊含义的字符，⽐如\\n则表示换⾏，\\?问号，\\"则表示双引号，\\'表示一个单引号等
+##### 2、反斜杠（\）是一个特殊的字符，被称为转义字符，用来转义后面一个字符。转义后的字符通常用于表示一个不可⻅的字符或具有特殊含义的字符，比如\\n则表示换行，\\?问号，\\"则表示双引号，\\'表示一个单引号等
 ##### 3、在Java中的字⺟前面加上反斜线"\"来表示常⻅的那些不能显示的ASCII字符，我们称之为转义字符
 ##### 4、例⼦：需要输出双引号的一段话
 ````java
@@ -29,7 +29,7 @@ System.out.println("基本路径getPath()="+file.getPath());
 System.out.println("文件名getName()="+file.getName());
 System.out.println("绝对路径getAbsolutePath="+file.getAbsolutePath());
 
-System.out.println("⽗路径名getParent()="+file.getParent());
+System.out.println("父路径名getParent()="+file.getParent());
 
 System.out.println("是否是绝对路径isAbsolute()="+file.isAbsolute());
 
