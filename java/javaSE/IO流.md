@@ -11,33 +11,33 @@
 
 
 ## InputStream
-1. InputStream是输⼊字节流的⽗类，它是⼀个抽象类（⼀般⽤他的⼦类）:
+1. InputStream是输入字节流的父类，它是一个抽象类（一般用他的子类）:
     ```java
     int read() 
-    讲解：从输⼊流中读取单个字节,返回0到255范围内的int字节值,字节数据可直接转换为int类型, 
+    讲解：从输入流中读取单个字节,返回0到255范围内的int字节值,字节数据可直接转换为int类型, 
     如果已经到达流末尾⽽没有可⽤的字节，则返回－1
 
     int read(byte[] buf)
-    讲解：从输⼊流中读取⼀定数量的字节，并将其存储在缓冲区数组buf中,返回实际读取的字节
+    讲解：从输入流中读取⼀定数量的字节，并将其存储在缓冲区数组buf中,返回实际读取的字节
     数，如果已经到达流末尾⽽没有可⽤的字节，则返回－1
 
     long skip(long n)
-    讲解：从输⼊流中跳过并丢弃 n 个字节的数据。
+    讲解：从输入流中跳过并丢弃 n 个字节的数据。
 
     int available()
     讲解：返回这个流中有多少个字节数，可以把buf数组⻓度定为这个
 
     void close() throws IOException
-    讲解：关闭输⼊流并释放与该流关联的系统资源
+    讲解：关闭输入流并释放与该流关联的系统资源
     ```
 
 2. 常⻅⼦类: 
     - FileInputStream:
         常用的构造函数
         ```java
-        //传⼊⽂件所在地址
+        //传入⽂件所在地址
         public FileInputStream(String name) throws FileNotFoundException
-        //传⼊⽂件对象
+        //传入⽂件对象
         public FileInputStream(File file) throws FileNotFoundException
         ```
         单字节读取案例
@@ -93,8 +93,8 @@
             <br>UTF-8中文占用3个字节,英文占1个字节
             <br>若文本中文多则推荐GBK、GB2312的方式存储
 
-    - ByteArrayInputStream 字节数组输⼊流
-    - ObjectInputStream 对象输⼊流
+    - ByteArrayInputStream 字节数组输入流
+    - ObjectInputStream 对象输入流
 
 
 
@@ -102,27 +102,27 @@
 1. OutputSteam是输出字节流的父类，他说一个抽象类
     ```java
     void write(int b)
-    讲解：将指定的字节写⼊输出流
+    讲解：将指定的字节写入输出流
 
     void write(byte[] b)throws IOException
-    讲解：将b.length个字节的byte数组写⼊当前输出流
+    讲解：将b.length个字节的byte数组写入当前输出流
 
     void flush() throws IOException
-    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊
+    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写入
     ⽂件，但是⼀般还有⼀部分有可能会留在内存这个缓冲区中, 所以需要调⽤flush空缓冲区数据。
 
     void close() throws IOException
-    讲解：关闭输⼊流并释放与该流关联的系统资源
+    讲解：关闭输入流并释放与该流关联的系统资源
     ```
 2. 常见子类: 
     - FileOutputStream:
         构造函数
         ```java
-        //传⼊输出的⽂件地址
+        //传入输出的⽂件地址
         public FileOutputStream(String name)
-        //传⼊⽬标输出的⽂件对象
+        //传入⽬标输出的⽂件对象
         public FileOutputStream(File file)
-        //传⼊⽬标输出的⽂件对象, 是否可以追加内容
+        //传入⽬标输出的⽂件对象, 是否可以追加内容
         public FileOutputStream(File file, boolean append)
         ```
         写入文件案例
