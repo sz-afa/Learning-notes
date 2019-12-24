@@ -308,8 +308,10 @@
     讲解：将cbuf字符数组的⼀部分写⼊到流中，但能不能写len个字符取决于cbuf中是否有那么多
 
     void flush() throws IOException
-    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊⽂件，但是⼀般还有⼀部分有可能会留在内存这个缓冲区中, 所以需要调⽤flush空缓冲区数据。
-    对⽐BufferWriter,它需要实时查表，效率低，其实缓冲区IO的各个都有，只不过很⼩被忽略,OutputStream都有flush⽅法，看⼦类是否有重写
+    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊⽂件，
+    但是⼀般还有⼀部分有可能会留在内存这个缓冲区中, 所以需要调⽤flush空缓冲区数据。
+    对⽐BufferWriter,它需要实时查表，效率低，其实缓冲区IO的各个都有，只不过很⼩被忽略,
+    OutputStream都有flush⽅法，看⼦类是否有重写
 
     void close() throws IOException
     讲解：关闭输⼊流并释放与该流关联的系统资源
@@ -331,7 +333,16 @@
         ```
     - 案例:
         ```java
-        
+        String dir = "D:\\";
+        String name = "b.txt";
+        //true为追加数据
+        Writer writer = new FileWriter(dir+name,false);
+        //直接写入int数值是不会写入数字的，会查表转换成对应字符
+        writer.write(23567);
+        //写入String 若需要写入数字请用字符串的形式
+        writer.write("第二段内容");
+        writer.flush();
+        writer.close();
         ```
 3. StringWriter类
 ## 字符缓冲输入输出流
