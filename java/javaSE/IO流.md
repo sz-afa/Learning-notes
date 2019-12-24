@@ -35,9 +35,9 @@
     - FileInputStream:
         常用的构造函数
         ```java
-        //传入⽂件所在地址
+        //传入文件所在地址
         public FileInputStream(String name) throws FileNotFoundException
-        //传入⽂件对象
+        //传入文件对象
         public FileInputStream(File file) throws FileNotFoundException
         ```
         单字节读取案例
@@ -109,7 +109,7 @@
 
     void flush() throws IOException
     讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写入
-    ⽂件，但是一般还有一部分有可能会留在内存这个缓冲区中, 所以需要调用flush空缓冲区数据。
+    文件，但是一般还有一部分有可能会留在内存这个缓冲区中, 所以需要调用flush空缓冲区数据。
 
     void close() throws IOException
     讲解：关闭输入流并释放与该流关联的系统资源
@@ -118,11 +118,11 @@
     - FileOutputStream:
         构造函数
         ```java
-        //传入输出的⽂件地址
+        //传入输出的文件地址
         public FileOutputStream(String name)
-        //传入目标输出的⽂件对象
+        //传入目标输出的文件对象
         public FileOutputStream(File file)
-        //传入目标输出的⽂件对象, 是否可以追加内容
+        //传入目标输出的文件对象, 是否可以追加内容
         public FileOutputStream(File file, boolean append)
         ```
         写入文件案例

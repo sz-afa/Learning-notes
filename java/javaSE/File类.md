@@ -23,10 +23,10 @@ String dir="D:\\";
 String name="a.txt";
 File file=new File(dir,name);
 
-//⽂件的查询和判断
+//文件的查询和判断
 System.out.println("当前系统路径分隔符:"+File.separator);
 System.out.println("基本路径getPath()="+file.getPath());
-System.out.println("⽂件名getName()="+file.getName());
+System.out.println("文件名getName()="+file.getName());
 System.out.println("绝对路径getAbsolutePath="+file.getAbsolutePath());
 
 System.out.println("⽗路径名getParent()="+file.getParent());
@@ -35,11 +35,11 @@ System.out.println("是否是绝对路径isAbsolute()="+file.isAbsolute());
 
 System.out.println("是否是一个目录isDirectory()="+file.isDirectory());
 
-System.out.println("是否是一个⽂件isFile()="+file.isFile());
+System.out.println("是否是一个文件isFile()="+file.isFile());
 
-System.out.println("⽂件或目录是否存在exists()="+file.exists());
+System.out.println("文件或目录是否存在exists()="+file.exists());
 
-System.out.println("目录中的⽂件和目录的名称所组成字符串数组list()");
+System.out.println("目录中的文件和目录的名称所组成字符串数组list()");
 
 //输出文件夹所有文件
 File dirFile=new File(dir);
@@ -56,14 +56,14 @@ mkdirFile.delete();
 //创建多个层级的目录
 File mkdirsFile=new File(dir+"/testdirs/test/dd");
 mkdirsFile.mkdirs();
-//创建一个新的⽂件
+//创建一个新的文件
 File newFile=new File(dir+"/testdir/newfile1.txt");
 try{
     newFile.createNewFile();
 }catch(IOExceptione){
     e.printStackTrace();
 }
-//删除⽂件
+//删除文件
 newFile.delete();
 
 //删除文件夹
