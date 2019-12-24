@@ -215,7 +215,8 @@
         BufferedInputStream bis = new BufferedInputStream(is,8192);//size默认是8192byte
 
         //字节输出流和字节缓冲输出流
-        OutputStream os = new FileOutputStream(dir+"copy.txt");//传入参数可以是file 也可以是 文件路径
+        //传入参数可以是file 也可以是文件路径。append为true时，为追加数据 false为覆盖数据
+        OutputStream os = new FileOutputStream(dir+"copy.txt",false);
         BufferedOutputStream bos = new BufferedOutputStream(os,8192);//size默认是8192byte
 
         int length;
