@@ -219,7 +219,7 @@
         BufferedOutputStream bos = new BufferedOutputStream(os,8192);//size默认是8192byte
 
         int length;
-        byte[] buf = new byte[2];
+        byte[] buf = new byte[1024];
 
         while ((length = bis.read(buf))!=-1){
             bos.write(buf,0,length);
