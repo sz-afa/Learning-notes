@@ -53,7 +53,7 @@
         System.out.println((char)read);
         is.close();
         ```
-        缓冲读取文件案例(读取中文会乱码)
+        缓冲读取文件案例(**中文会乱码**)
         ```java
         String dir = "D:\\";
         String name = "a.txt";
@@ -71,7 +71,7 @@
         }
         is.close();
         ```
-        缓冲读取文本(中文不乱码)
+        缓冲读取文本案例(**中文不乱码**)
         ```java
         String dir = "D:\\";
         String name = "a.txt";
