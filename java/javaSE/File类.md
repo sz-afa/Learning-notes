@@ -2,9 +2,9 @@
 ## 区分斜杠
 
 ##### 1、斜杠："/"与反斜杠："\\"
-##### 2、反斜杠（\）是⼀个特殊的字符，被称为转义字符，用来转义后面⼀个字符。转义后的字符通常用于表示⼀个不可⻅的字符或具有特殊含义的字符，⽐如\\n则表示换⾏，\\?问号，\\"则表示双引号，\\'表示⼀个单引号等
+##### 2、反斜杠（\）是一个特殊的字符，被称为转义字符，用来转义后面一个字符。转义后的字符通常用于表示一个不可⻅的字符或具有特殊含义的字符，⽐如\\n则表示换⾏，\\?问号，\\"则表示双引号，\\'表示一个单引号等
 ##### 3、在Java中的字⺟前面加上反斜线"\"来表示常⻅的那些不能显示的ASCII字符，我们称之为转义字符
-##### 4、例⼦：需要输出双引号的⼀段话
+##### 4、例⼦：需要输出双引号的一段话
 ````java
 Stringtitle="\"这个是带双引号的标题\"";
 ````
@@ -33,9 +33,9 @@ System.out.println("⽗路径名getParent()="+file.getParent());
 
 System.out.println("是否是绝对路径isAbsolute()="+file.isAbsolute());
 
-System.out.println("是否是⼀个目录isDirectory()="+file.isDirectory());
+System.out.println("是否是一个目录isDirectory()="+file.isDirectory());
 
-System.out.println("是否是⼀个⽂件isFile()="+file.isFile());
+System.out.println("是否是一个⽂件isFile()="+file.isFile());
 
 System.out.println("⽂件或目录是否存在exists()="+file.exists());
 
@@ -56,7 +56,7 @@ mkdirFile.delete();
 //创建多个层级的目录
 File mkdirsFile=new File(dir+"/testdirs/test/dd");
 mkdirsFile.mkdirs();
-//创建⼀个新的⽂件
+//创建一个新的⽂件
 File newFile=new File(dir+"/testdir/newfile1.txt");
 try{
     newFile.createNewFile();
