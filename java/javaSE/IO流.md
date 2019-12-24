@@ -99,7 +99,7 @@
 
 
 ## OutputStream
-1. OutputSteam是输出字节流的父类，他说一个抽象类
+1. OutputSteam是输出字节流的父类，他是一个抽象类
     ```java
     void write(int b)
     讲解：将指定的字节写入输出流
@@ -323,8 +323,7 @@
         public FileWriter(File file) throws IOException
         讲解：如果⽂件不存在，这会⾃动创建。如果⽂件存在，则会覆盖
 
-        public FileWriter(String fileName, boolean append) throws
-        IOException
+        public FileWriter(String fileName, boolean append) throws  IOException
         讲解：加⼊true参数，会实现对⽂件的续写,使用false则会实现对⽂件的覆盖
 
         public FileWriter(File file, boolean append) throws IOException
