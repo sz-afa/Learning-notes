@@ -154,7 +154,7 @@
     - 缓冲，缓和冲击，例如操作磁盘比内存慢的很多，所以不用缓冲区效率很低
     - 数据传输速度和数据处理的速度存在不平衡，⽐如你每秒要写100次硬盘，对系统冲击很⼤，浪费了⼤量时间在忙着处理开始写和结束写这两个事件，用buffer暂存起来，变成每10秒写一次硬盘，数据可以直接送往缓冲区，高速设备不用再等待低速设备，对系统的冲击就很小，写入效率高了。
 3. Java IO包⾥⾯的两个缓冲类（高级流）:
-    - BufferInputStream 和 BufferOutputStream
+    - BufferedInputStream 和 BufferedOutputStream
     - 采用包装设计模式（锦上添花）
 4. BufferInputStream 缓冲字节输⼊流:
     - BufferedInputStream 通过预先读⼊⼀整段原始输⼊流数据⾄缓冲区中，⽽外界对BufferedInputStream的读取操作实际上是在缓冲区上进⾏，如果读取的数据超过了缓冲区的范围，那么BufferedInputStream负责重新从原始输⼊流中载⼊下⼀截数据填充缓冲区，然后外界继续通过缓冲区进⾏数据读取。
@@ -180,5 +180,57 @@
         //关闭释放资源，关闭的时候这个流即可，InputStream会在⾥⾯被关闭
         void close();
         ```
-    - 案例
+5. BufferedOutputStream 缓冲字节输出流:
+    - 常见构造器:
+        ```java
+        //对输出流进⾏包装,⾥⾯默认的缓冲区是8k
+        public BufferedOutputStream(OutputStream out);
+
+        //对输出流进⾏包装,指定创建具有指定缓冲区⼤⼩的
+        public BufferedOutputStream(OutputStream out,int size);
+        ```
+    - 常用的3个方法:
+        ```java
+        //向输出流中输出⼀个字节
+        public void write(int b);
+
+        //将指定 byte 数组中从偏移量 off 开始的 len 个字节写⼊缓冲的输出流。
+        public void write(byte[] buf,int off,int len);
+
+        //刷新此缓冲的输出流，强制使所有缓冲的输出字节被写出到底层输出流中。
+        public void flush();
+
+        //关闭释放资源，关闭的时候这个流即可，OutputStream会在⾥⾯被关闭, JDK7新特性try(在这⾥声明的会⾃动关闭){}
+        void close();
+        ```
+6. Buffer输入输出流实战
+    - 文件拷贝:
+        ```java
+        String dir = "D:\\";
+        String name = "b.txt";
+        File file = new File(dir,name);
+
+        //字节输入流和字节缓冲输入流
+        InputStream is = new FileInputStream(file);//传入参数可以是file 也可以是 文件路径
+        BufferedInputStream bis = new BufferedInputStream(is,8192);//size默认是8192byte
+
+        //字节输出流和字节缓冲输出流
+        OutputStream os = new FileOutputStream(dir+"copy.txt");//传入参数可以是file 也可以是 文件路径
+        BufferedOutputStream bos = new BufferedOutputStream(os,8192);//size默认是8192byte
+
+        int length;
+        byte[] buf = new byte[2];
+
+        while ((length = bis.read(buf))!=-1){
+            bos.write(buf,0,length);
+        }
+
+        //刷新缓冲区，才可以保证数据全部传输完成
+        bos.flush();
+
+        //is和os不用关闭，bis和bos关闭的时候会关闭is和os
+        bis.close();
+        bos.close();
+        ```
+
 # 字符流
