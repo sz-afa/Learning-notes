@@ -325,10 +325,10 @@
 
         public FileWriter(String fileName, boolean append) throws
         IOException
-        讲解：加⼊true参数，会实现对⽂件的续写，使用false则会实现对⽂件的覆盖
+        讲解：加⼊true参数，会实现对⽂件的续写,使用false则会实现对⽂件的覆盖
 
         public FileWriter(File file, boolean append) throws IOException
-        讲解：加⼊true参数，会实现对⽂件的续写，使用false则会实现对⽂件的覆盖
+        讲解：加⼊true参数，会实现对⽂件的续写,使用false则会实现对⽂件的覆盖
         ```
     - 案例:
         ```java
