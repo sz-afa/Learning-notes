@@ -1,3 +1,5 @@
+[toc]
+
 # 字符流字节流区别
 - 字符流：处理字符相关，如处理文本数据(TXT文件),Reader/Writer
 - 字节流：处理字节相关，如声音图片等二进制数据，InputSteam/OutputStream
@@ -346,3 +348,100 @@
         ```
 3. StringWriter类
 ## 字符缓冲输入输出流
+1. Buffered Reader字符缓冲输入流
+    - 为了提高了单个字符读写的效率，进⾏字符批量的读写; 为了提高字符流读写的效率，引⼊了缓冲机制
+    - 采⽤包装设计模式（锦上添花）
+    - 简介：当BufferedReader在读取⽂本⽂件时，会先尽量从⽂件中读⼊字符数据并放满缓冲区，⽽之后若使⽤read()⽅法，会先从缓冲区中进⾏读取。如果缓冲区数据不⾜，才会再从⽂件中读取
+    - 构造函数:
+        ```java
+        BufferedReader(Reader in)
+        BufferedReader(Reader in, int sz)
+        //讲解：创建⼀个使⽤指定⼤⼩输⼊缓冲区的缓冲字符输⼊流。
+        ```
+    - 常⽤API:
+        ```java
+        boolean ready()
+        //讲解：判断此流是否已准备好被读取，依赖其他流，所以⼀般需要做判断
+
+        int read()
+        //讲解：读取单个字符
+
+        int read(char[] cbuf, int off, int len) 
+        //讲解：读取⼀部分字符到数组⾥⾯，从数组下标off处放置length⻓度的字符
+        
+        String readLine()
+        //讲解:读取⼀整⾏⽂本⾏，返回⼀整⾏字符串，如果读到⾏尾了就返回null,注意返回的⼀⾏字符中不包含换⾏符
+
+        void close() 
+        //讲解：关闭流释放资源
+        ```
+    - 单字符读取案例:
+        ```java
+        String dir = "D:\\";
+        String name = "c.txt";
+        //true为追加数据
+        Reader reader = new FileReader(dir+name);
+        BufferedReader br = new BufferedReader(reader);
+
+        if(br.ready()==false){
+            System.out.println("文件流暂时无法读取");
+            return;
+        }
+
+        int size;
+
+        char[] chars = new char[1024];
+        while ((size = br.read(chars))!=-1){
+            System.out.println(new String(chars,0,size));
+        }
+        br.close();
+        ```
+    - 行读取案例:
+        ```java
+        String dir = "D:\\";
+        String name = "c.txt";
+        //true为追加数据
+        Reader reader = new FileReader(dir+name);
+        BufferedReader br = new BufferedReader(reader);
+        if(br.ready()==false){
+            System.out.println("文件流暂时无法读取");
+            return;
+        }
+        String line;
+
+        while ((line = br.readLine())!=null){
+            System.out.println(line);
+        }
+        br.close();
+        ```
+2. BufferedWriter:
+    - 简介：写⼊的数据并不会先输出到⽬的地，⽽是先存储⾄缓冲区中。如果缓冲区中的数据满了，才会⼀次对⽬的地进⾏写出
+    - 构造函数:
+        ```java
+        BufferedWriter(Writer out) 
+        BufferedWriter(Writer out, int size)
+        ```
+    - 常用API:
+        ```java
+        void write(int c)
+        讲解：写⼊⼀个字符
+
+        void write(char[] cbuf, int off, int len)
+        讲解：写⼊字符数组的⼀部分，通过off和len控制。
+
+        void write(String s, int off, int len) 
+        讲解：写⼊字符数组的⼀部分，通过off和len控制。
+
+        void newLine() 
+        讲解：写如⼀个换⾏符合
+
+        void close() 
+        讲解：关闭输⼊流并释放与该流关联的系统资源
+
+        void flush()
+        讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊⽂件，但是⼀般还有⼀部分有可能会留在内存这个缓冲区中, 所以需要调⽤flush空缓冲区数据。
+        ```
+    - 案例:
+        ```java
+
+        ```
