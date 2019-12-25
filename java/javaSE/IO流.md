@@ -1,4 +1,4 @@
-[toc]
+@[TOC]
 
 # 字符流字节流区别
 - 字符流：处理字符相关，如处理文本数据(TXT文件),Reader/Writer
@@ -379,7 +379,6 @@
         ```java
         String dir = "D:\\";
         String name = "c.txt";
-        //true为追加数据
         Reader reader = new FileReader(dir+name);
         BufferedReader br = new BufferedReader(reader);
 
@@ -400,7 +399,6 @@
         ```java
         String dir = "D:\\";
         String name = "c.txt";
-        //true为追加数据
         Reader reader = new FileReader(dir+name);
         BufferedReader br = new BufferedReader(reader);
         if(br.ready()==false){
@@ -424,7 +422,7 @@
     - 常用API:
         ```java
         void write(int c)
-        讲解：写⼊⼀个字符
+        讲解：写⼊⼀个字符,会根据码表进行转换
 
         void write(char[] cbuf, int off, int len)
         讲解：写⼊字符数组的⼀部分，通过off和len控制。
@@ -443,5 +441,19 @@
         ```
     - 案例:
         ```java
+        String dir = "D:\\";
+        String name = "c.txt";
+        //true为追加数据
+        Writer writer = new FileWriter(dir + name,false);
 
+        BufferedWriter bw = new BufferedWriter(writer);
+
+        char ch = '阿';
+        bw.write(ch);
+        bw.write('发');
+        //换行
+        bw.newLine();
+        bw.write("第二行");
+        bw.close();
         ```
+    - 
