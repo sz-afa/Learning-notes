@@ -1,4 +1,24 @@
-@[TOC]
+# 导航
+
+* [字符流字节流区别](#字符流字节流区别)
+* [字节流](#字节流)
+  * [InputStream](#inputstream)
+  * [OutputStream](#outputstream)
+  * [字节缓冲输入输出流](#字节缓冲输入输出流)
+* [字符流](#字符流)
+  * [Reader](#reader)
+  * [Writer](#writer)
+  * [字符缓冲输入输出流](#字符缓冲输入输出流)
+* [字符流字节流桥梁](#字符流字节流桥梁)
+  * [背景](#背景)
+  * [InputStreamReader](#inputstreamreader)
+  * [OutputStreamWriter](#outputstreamwriter)
+* [IO异常处理](#io异常处理)
+  * [写法一(老式不推荐)](#写法一老式不推荐)
+  * [写法二(jdk<=6)](#写法二jdk6)
+  * [写法三(jdk>6)](#写法三jdk6)
+
+
 
 # 字符流字节流区别
 - 字符流：处理字符相关，如处理文本数据(TXT文件),Reader/Writer
@@ -606,7 +626,7 @@ try {
 }
 ```
 ## 写法三(jdk>6)
-1. JDK7之后的写法，JDK9⼜进行了改良，但是变化不大，记住下面的写法即可
+1. JDK7之后的写法，JDK9又进行了改良，但是变化不大，记住下面的写法即可
 2. 需要关闭的资源只要实现了java.lang.AutoCloseable，就可以自动被关闭
 3. try()里面可以定义多个资源，它们的关闭顺序是,最后在try()定义的资源先关闭。
 4. 代码:
