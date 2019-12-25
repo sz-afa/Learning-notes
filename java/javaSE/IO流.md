@@ -159,7 +159,7 @@
     - BufferedInputStream 和 BufferedOutputStream
     - 采用包装设计模式（锦上添花）
 4. BufferInputStream 缓冲字节输入流:
-    - BufferedInputStream 通过预先读入一整段原始输入流数据⾄缓冲区中，而外界对BufferedInputStream的读取操作实际上是在缓冲区上进行，如果读取的数据超过了缓冲区的范围，那么BufferedInputStream负责重新从原始输入流中载入下一截数据填充缓冲区，然后外界继续通过缓冲区进行数据读取。
+    - BufferedInputStream 通过预先读入一整段原始输入流数据至缓冲区中，而外界对BufferedInputStream的读取操作实际上是在缓冲区上进行，如果读取的数据超过了缓冲区的范围，那么BufferedInputStream负责重新从原始输入流中载入下一截数据填充缓冲区，然后外界继续通过缓冲区进行数据读取。
     - 好处：避免了大量的磁盘IO，原始的InputStream类实现的read是即时读取的，每一次读取都会是一次磁盘IO操作（哪怕只读取了1个字节的数据），如果数据量巨大，这样的磁盘消耗⾮常可怕。
     - 缓冲区的实现: 读取可以读取缓冲区中的内容，当读取超过缓冲区的内容后再进行一次磁盘IO，载入一段数据填充缓冲，下一次读取一般情况就直接可以从缓冲区读取，减少了磁盘IO。
     - 默认缓冲区大小是8k, int DEFAULT_BUFFER_SIZE = 8192;
@@ -238,7 +238,7 @@
 
 # 字符流
 ## Reader
-1. Reader是输⼊字符流的父类，它是一个抽象类, 部分库不推荐使用Reader/Writer，所以简单了解即可
+1. Reader是输入字符流的父类，它是一个抽象类, 部分库不推荐使用Reader/Writer，所以简单了解即可
 2. 常用方法:
     ```java
     int read()
@@ -247,11 +247,11 @@
     所以返回的数据类型是int需要强转成char才能正常显示
 
     int read(char cbuf[])
-    讲解：从输⼊字符流中读取一定数量的字符，并将其存储在缓冲区数组cbuf中, 返回实际读取的字符
+    讲解：从输入字符流中读取一定数量的字符，并将其存储在缓冲区数组cbuf中, 返回实际读取的字符
     数，如果已经到达流末尾而没有可用的字节，则返回－1
 
     void close() throws IOException
-    讲解：关闭输⼊流并释放与该流关联的系统资源
+    讲解：关闭输入流并释放与该流关联的系统资源
     ```
 3. 常见子类:
     - FileReader 用来读取字符文件的实现类:
@@ -301,22 +301,22 @@
 1. Writer是输出字符流的⽗类，它是一个抽象类:
     ```java
     public void write(int c) throws IOException
-    讲解：直接将int型数据作为参数的话，是不会写⼊数字的，而是现将数字按照ascll码表转换为相应的字符，然后写⼊
+    讲解：直接将int型数据作为参数的话，是不会写入数字的，而是现将数字按照ascll码表转换为相应的字符，然后写入
 
     public void write(String str) throws IOException
-    讲解：要想实现数字和中文的写⼊，必须要用String为参数的Write
+    讲解：要想实现数字和中文的写入，必须要用String为参数的Write
 
     public abstract void write(char cbuf[], int off, int len) throws  IOException
-    讲解：将cbuf字符数组的一部分写⼊到流中，但能不能写len个字符取决于cbuf中是否有那么多
+    讲解：将cbuf字符数组的一部分写入到流中，但能不能写len个字符取决于cbuf中是否有那么多
 
     void flush() throws IOException
-    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊文件，
+    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写入文件，
     但是一般还有一部分有可能会留在内存这个缓冲区中, 所以需要调用flush空缓冲区数据。
     对⽐BufferWriter,它需要实时查表，效率低，其实缓冲区IO的各个都有，只不过很⼩被忽略,
     OutputStream都有flush⽅法，看⼦类是否有重写
 
     void close() throws IOException
-    讲解：关闭输⼊流并释放与该流关联的系统资源
+    讲解：关闭输入流并释放与该流关联的系统资源
     ```
 2. 常见子类:
     - FileWriter 用来写出字符文件的实现类:
@@ -328,10 +328,10 @@
         讲解：如果文件不存在，这会⾃动创建。如果文件存在，则会覆盖
 
         public FileWriter(String fileName, boolean append) throws  IOException
-        讲解：加⼊true参数，会实现对文件的续写,使用false则会实现对文件的覆盖
+        讲解：加入true参数，会实现对文件的续写,使用false则会实现对文件的覆盖
 
         public FileWriter(File file, boolean append) throws IOException
-        讲解：加⼊true参数，会实现对文件的续写,使用false则会实现对文件的覆盖
+        讲解：加入true参数，会实现对文件的续写,使用false则会实现对文件的覆盖
         ```
     - 案例:
         ```java
@@ -349,14 +349,14 @@
 3. StringWriter类
 ## 字符缓冲输入输出流
 1. Buffered Reader字符缓冲输入流
-    - 为了提高了单个字符读写的效率，进行字符批量的读写; 为了提高字符流读写的效率，引⼊了缓冲机制
+    - 为了提高了单个字符读写的效率，进行字符批量的读写; 为了提高字符流读写的效率，引入了缓冲机制
     - 采用包装设计模式（锦上添花）
-    - 简介：当BufferedReader在读取文本文件时，会先尽量从文件中读⼊字符数据并放满缓冲区，而之后若使用read()⽅法，会先从缓冲区中进行读取。如果缓冲区数据不⾜，才会再从文件中读取
+    - 简介：当BufferedReader在读取文本文件时，会先尽量从文件中读入字符数据并放满缓冲区，而之后若使用read()⽅法，会先从缓冲区中进行读取。如果缓冲区数据不⾜，才会再从文件中读取
     - 构造函数:
         ```java
         BufferedReader(Reader in)
         BufferedReader(Reader in, int sz)
-        //讲解：创建一个使用指定⼤⼩输⼊缓冲区的缓冲字符输⼊流。
+        //讲解：创建一个使用指定⼤⼩输入缓冲区的缓冲字符输入流。
         ```
     - 常用API:
         ```java
@@ -413,7 +413,7 @@
         br.close();
         ```
 2. BufferedWriter:
-    - 简介：写⼊的数据并不会先输出到⽬的地，而是先存储⾄缓冲区中。如果缓冲区中的数据满了，才会一次对⽬的地进行写出
+    - 简介：写入的数据并不会先输出到目的地，而是先存储至缓冲区中。如果缓冲区中的数据满了，才会一次对目的地进行写出
     - 构造函数:
         ```java
         BufferedWriter(Writer out) 
@@ -422,22 +422,22 @@
     - 常用API:
         ```java
         void write(int c)
-        讲解：写⼊一个字符,会根据码表进行转换
+        讲解：写入一个字符,会根据码表进行转换
 
         void write(char[] cbuf, int off, int len)
-        讲解：写⼊字符数组的一部分，通过off和len控制。
+        讲解：写入字符数组的一部分，通过off和len控制。
 
         void write(String s, int off, int len) 
-        讲解：写⼊字符数组的一部分，通过off和len控制。
+        讲解：写入字符数组的一部分，通过off和len控制。
 
         void newLine() 
         讲解：写如一个换行符合
 
         void close() 
-        讲解：关闭输⼊流并释放与该流关联的系统资源
+        讲解：关闭输入流并释放与该流关联的系统资源
 
         void flush()
-        讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊文件，但是一般还有一部分有可能会留在内存这个缓冲区中, 所以需要调用flush空缓冲区数据。
+        讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写入文件，但是一般还有一部分有可能会留在内存这个缓冲区中, 所以需要调用flush空缓冲区数据。
         ```
     - 案例:
         ```java
@@ -514,17 +514,17 @@
 3. 常用API:
     ```java
     void write(int c)
-    讲解：写⼊一个字符
+    讲解：写入一个字符
     void write(char[] cbuf, int off, int len)
-    讲解：写⼊字符数组的一部分，通过off和len控制
+    讲解：写入字符数组的一部分，通过off和len控制
     void write(String s, int off, int len) 
-    讲解：写⼊字符数组的一部分，通过off和len控制。
+    讲解：写入字符数组的一部分，通过off和len控制。
     void newLine() 
     讲解：写如一个换行符合
     void close() 
-    讲解：关闭输⼊流并释放与该流关联的系统资源
+    讲解：关闭输入流并释放与该流关联的系统资源
     void flush()
-    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊文件，但是一般还有一部分有可能会留在内存这个缓冲区中, 所以需要调用flush空缓冲区数据
+    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写入文件，但是一般还有一部分有可能会留在内存这个缓冲区中, 所以需要调用flush空缓冲区数据
     ```
 4. 案例:
     ```java
