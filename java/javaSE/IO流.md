@@ -265,7 +265,7 @@
         ```
     - 单字符案例:
         ```java
-        //读取中⽂显示出来, java运⾏时采⽤utf16编码，多数汉字占2个字节，⼀个char就够，少数占4个
+        //读取中⽂显示出来, java运行时采⽤utf16编码，多数汉字占2个字节，⼀个char就够，少数占4个
         //字节，需要两个char来表示
         String dir = "D:\\";
         String name = "b.txt";
@@ -349,9 +349,9 @@
 3. StringWriter类
 ## 字符缓冲输入输出流
 1. Buffered Reader字符缓冲输入流
-    - 为了提高了单个字符读写的效率，进⾏字符批量的读写; 为了提高字符流读写的效率，引⼊了缓冲机制
+    - 为了提高了单个字符读写的效率，进行字符批量的读写; 为了提高字符流读写的效率，引⼊了缓冲机制
     - 采⽤包装设计模式（锦上添花）
-    - 简介：当BufferedReader在读取文本文件时，会先尽量从⽂件中读⼊字符数据并放满缓冲区，⽽之后若使⽤read()⽅法，会先从缓冲区中进⾏读取。如果缓冲区数据不⾜，才会再从⽂件中读取
+    - 简介：当BufferedReader在读取文本文件时，会先尽量从⽂件中读⼊字符数据并放满缓冲区，⽽之后若使⽤read()⽅法，会先从缓冲区中进行读取。如果缓冲区数据不⾜，才会再从⽂件中读取
     - 构造函数:
         ```java
         BufferedReader(Reader in)
@@ -367,10 +367,10 @@
         //讲解：读取单个字符
 
         int read(char[] cbuf, int off, int len) 
-        //讲解：读取⼀部分字符到数组⾥⾯，从数组下标off处放置length⻓度的字符
+        //讲解：读取⼀部分字符到数组⾥面，从数组下标off处放置length⻓度的字符
         
         String readLine()
-        //讲解:读取⼀整⾏⽂本⾏，返回⼀整⾏字符串，如果读到⾏尾了就返回null,注意返回的⼀⾏字符中不包含换⾏符
+        //讲解:读取⼀整行⽂本行，返回⼀整行字符串，如果读到行尾了就返回null,注意返回的⼀行字符中不包含换行符
 
         void close() 
         //讲解：关闭流释放资源
@@ -413,7 +413,7 @@
         br.close();
         ```
 2. BufferedWriter:
-    - 简介：写⼊的数据并不会先输出到⽬的地，⽽是先存储⾄缓冲区中。如果缓冲区中的数据满了，才会⼀次对⽬的地进⾏写出
+    - 简介：写⼊的数据并不会先输出到⽬的地，⽽是先存储⾄缓冲区中。如果缓冲区中的数据满了，才会⼀次对⽬的地进行写出
     - 构造函数:
         ```java
         BufferedWriter(Writer out) 
@@ -431,7 +431,7 @@
         讲解：写⼊字符数组的⼀部分，通过off和len控制。
 
         void newLine() 
-        讲解：写如⼀个换⾏符合
+        讲解：写如⼀个换行符合
 
         void close() 
         讲解：关闭输⼊流并释放与该流关联的系统资源
@@ -460,10 +460,10 @@
 # 字符流字节流桥梁
 ## 背景
 1. 计算机存储的单位是字节，从持久设备读取到程序中是解码，从程序写到持久设备中是编码不管是编码还是解码，不同字符集编解码成 字符 需要不同的个数，因此字节流读取容易出错，⽐如乱码。
-2. 因此需要⼀个流，把字节流读取的字节进⾏缓冲后，在通过字符集解码成字符返回
+2. 因此需要⼀个流，把字节流读取的字节进行缓冲后，在通过字符集解码成字符返回
 ## InputStreamReader
 1. 简介: 
-    将字节流转换为字符流, 字节流通向字符流的桥梁,如果不指定字符集编码，则解码过程将使⽤平台默认的字符编码，如：UTF-8。文本文件存储是A编码，然后如果以B编码进⾏读取则会乱码。
+    将字节流转换为字符流, 字节流通向字符流的桥梁,如果不指定字符集编码，则解码过程将使⽤平台默认的字符编码，如：UTF-8。文本文件存储是A编码，然后如果以B编码进行读取则会乱码。
 2. 构造函数:
     ```java
     //使⽤系统默认编码集
@@ -476,7 +476,7 @@
     int read()
     讲解：读取单个字符
     int read(char[] cbuf, int off, int len) 
-    讲解：读取⼀部分字符到数组⾥⾯，从数组下标off处放置length⻓度的字符
+    讲解：读取⼀部分字符到数组⾥面，从数组下标off处放置length⻓度的字符
     int read(char[] cbuf)
     讲解：将读取到的字符存到数组中，返回读取的字符数
     void close() 
@@ -520,7 +520,7 @@
     void write(String s, int off, int len) 
     讲解：写⼊字符数组的⼀部分，通过off和len控制。
     void newLine() 
-    讲解：写如⼀个换⾏符合
+    讲解：写如⼀个换行符合
     void close() 
     讲解：关闭输⼊流并释放与该流关联的系统资源
     void flush()
@@ -546,3 +546,68 @@
     writer.close();
     bw.close();
     ```
+# IO异常处理
+## 写法一(老式不推荐)
+```java
+try {
+    FileInputStream fis = new FileInputStream("a.txt");
+    BufferedInputStream bis = new BufferedInputStream(fis);
+    FileOutputStream fos = new FileOutputStream("copy.txt");
+    BufferedOutputStream bos = new BufferedOutputStream(fos);
+    int size;
+    byte[] buf = new byte[1024];
+    while ((size = bis.read(buf)) != -1) {
+        //此处抛出异常时流无法正常关闭，容易造成资源浪费。
+        bos.write(buf, 0, size);
+    }
+    //刷新此缓冲的输出流，才可以保证数据全部输出完成,close会⾃动关闭
+    bos.flush();
+    //关闭的时候只需要关闭最外层的流就行了，源码⾥面会⾃动关闭inputstream对象的
+    bis.close();
+    bos.close();
+} catch (Exception e) {
+    e.printStackTrace();
+}
+```
+## 写法二(jdk<=6)
+```java
+BufferedInputStream bis = null;
+BufferedOutputStream bos = null;
+try {
+    FileInputStream fis = new FileInputStream("a.txt");
+    bis = new BufferedInputStream(fis);
+    FileOutputStream fos = new FileOutputStream("copy.txt");
+    bos = new BufferedOutputStream(fos);
+    int size;
+    byte[] buf = new byte[1024];
+    while ((size = bis.read(buf)) != -1) {
+        bos.write(buf, 0, size);
+    }
+} catch (Exception e) {
+    e.printStackTrace();
+} finally {
+    if (bis != null) {
+        try {
+            bis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (bos != null) {
+                try {
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
+```
+## 写法三(jdk>6)
+1. JDK7之后的写法，JDK9⼜进行了改良，但是变化不⼤，记住下面的写法即可
+2. 需要关闭的资源只要实现了java.lang.AutoCloseable，就可以⾃动被关闭
+3. try()⾥⾯可以定义多个资源，它们的关闭顺序是,最后在try()定义的资源先关闭。
+4. 代码:
+```java
+
+```
