@@ -367,7 +367,7 @@
         //讲解：读取单个字符
 
         int read(char[] cbuf, int off, int len) 
-        //讲解：读取一部分字符到数组⾥面，从数组下标off处放置length⻓度的字符
+        //讲解：读取一部分字符到数组里面，从数组下标off处放置length⻓度的字符
         
         String readLine()
         //讲解:读取一整行文本行，返回一整行字符串，如果读到行尾了就返回null,注意返回的一行字符中不包含换行符
@@ -477,7 +477,7 @@
     int read()
     讲解：读取单个字符
     int read(char[] cbuf, int off, int len) 
-    讲解：读取一部分字符到数组⾥面，从数组下标off处放置length⻓度的字符
+    讲解：读取一部分字符到数组里面，从数组下标off处放置length⻓度的字符
     int read(char[] cbuf)
     讲解：将读取到的字符存到数组中，返回读取的字符数
     void close() 
@@ -564,7 +564,7 @@ try {
     }
     //刷新此缓冲的输出流，才可以保证数据全部输出完成,close会自动关闭
     bos.flush();
-    //关闭的时候只需要关闭最外层的流就行了，源码⾥面会自动关闭inputstream对象的
+    //关闭的时候只需要关闭最外层的流就行了，源码里面会自动关闭inputstream对象的
     bis.close();
     bos.close();
 } catch (Exception e) {
@@ -608,7 +608,7 @@ try {
 ## 写法三(jdk>6)
 1. JDK7之后的写法，JDK9⼜进行了改良，但是变化不大，记住下面的写法即可
 2. 需要关闭的资源只要实现了java.lang.AutoCloseable，就可以自动被关闭
-3. try()⾥⾯可以定义多个资源，它们的关闭顺序是,最后在try()定义的资源先关闭。
+3. try()里面可以定义多个资源，它们的关闭顺序是,最后在try()定义的资源先关闭。
 4. 代码:
 ```java
 String dir = "D:\\";
