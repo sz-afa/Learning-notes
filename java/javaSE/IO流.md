@@ -477,13 +477,72 @@
     讲解：读取单个字符
     int read(char[] cbuf, int off, int len) 
     讲解：读取⼀部分字符到数组⾥⾯，从数组下标off处放置length⻓度的字符
-    int read(char []cbuf)
+    int read(char[] cbuf)
     讲解：将读取到的字符存到数组中，返回读取的字符数
     void close() 
     讲解：关闭流释放资源
     ```
 4. 案例:
     ```java
+    String dir = "D:\\";
+    String name = "c.txt";
 
+    InputStream is = new FileInputStream(dir+name);
+    //inputStream 转 Reader
+    InputStreamReader isr = new InputStreamReader(is,"UTF-8");
+    //缓冲Reader
+    BufferedReader br = new BufferedReader(isr);
+
+    String line;
+    while ((line=br.readLine())!=null){
+        System.out.println(line);
+    }
+    is.close();
+    isr.close();
+    br.close();
     ```
 ## OutputStreamWriter
+1. 简介：
+    将字符流转换为字节流(看源码解释), 字符流通向字节流的桥梁,如果不指定字符集编码，则编码过程将使⽤平台默认的字符编码，如：GBK
+2. 构造函数：
+    ```java
+    //使⽤系统默认编码集
+    public OutputStreamWriter(OutputStream out)
+    //指定指定编码集创建对象
+    public OutputStreamWriter(OutputStream out, String charsetName)
+    ```
+3. 常用API:
+    ```java
+    void write(int c)
+    讲解：写⼊⼀个字符
+    void write(char[] cbuf, int off, int len)
+    讲解：写⼊字符数组的⼀部分，通过off和len控制
+    void write(String s, int off, int len) 
+    讲解：写⼊字符数组的⼀部分，通过off和len控制。
+    void newLine() 
+    讲解：写如⼀个换⾏符合
+    void close() 
+    讲解：关闭输⼊流并释放与该流关联的系统资源
+    void flush()
+    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊⽂件，但是⼀般还有⼀部分有可能会留在内存这个缓冲区中, 所以需要调⽤flush空缓冲区数据
+    ```
+4. 案例:
+    ```java
+    String dir = "D:\\";
+    String name = "c.txt";
+    //true为追加数据
+    OutputStream os = new FileOutputStream(dir+name,false);
+    OutputStreamWriter writer = new OutputStreamWriter(os,"UTF-8");
+    BufferedWriter bw = new BufferedWriter(writer);
+
+    bw.write('第');
+    bw.write('一');
+    bw.write('行');
+    //换行
+    bw.newLine();
+    bw.write("第二行");
+    bw.flush();
+    os.close();
+    writer.close();
+    bw.close();
+    ```
