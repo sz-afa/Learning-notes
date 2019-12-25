@@ -238,23 +238,23 @@
 
 # 字符流
 ## Reader
-1. Reader是输⼊字符流的父类，它是⼀个抽象类, 部分库不推荐使⽤Reader/Writer，所以简单了解即可
+1. Reader是输⼊字符流的父类，它是一个抽象类, 部分库不推荐使用Reader/Writer，所以简单了解即可
 2. 常用方法:
     ```java
     int read()
-    讲解：⼀个字符⼀个字符的读,只能⽤来操作⽂本(不能读图⽚ ⾳频 视频)
+    讲解：一个字符一个字符的读,只能用来操作文本(不能读图片 音频 视频)
     返回的数据的大小根据字符的大小而变化（最大为四个字节）
     所以返回的数据类型是int需要强转成char才能正常显示
 
     int read(char cbuf[])
-    讲解：从输⼊字符流中读取⼀定数量的字符，并将其存储在缓冲区数组cbuf中, 返回实际读取的字符
-    数，如果已经到达流末尾⽽没有可⽤的字节，则返回－1
+    讲解：从输⼊字符流中读取一定数量的字符，并将其存储在缓冲区数组cbuf中, 返回实际读取的字符
+    数，如果已经到达流末尾而没有可用的字节，则返回－1
 
     void close() throws IOException
     讲解：关闭输⼊流并释放与该流关联的系统资源
     ```
 3. 常见子类:
-    - FileReader ⽤来读取字符⽂件的实现类:
+    - FileReader 用来读取字符文件的实现类:
         ```java
         public FileReader(String fileName) throws FileNotFoundException {
             super(new FileInputStream(fileName));
@@ -265,7 +265,7 @@
         ```
     - 单字符案例:
         ```java
-        //读取中⽂显示出来, java运行时采⽤utf16编码，多数汉字占2个字节，⼀个char就够，少数占4个
+        //读取中文显示出来, java运行时采用utf16编码，多数汉字占2个字节，一个char就够，少数占4个
         //字节，需要两个char来表示
         String dir = "D:\\";
         String name = "b.txt";
@@ -298,20 +298,20 @@
         ```
     - StringReader
 ## Writer
-1. Writer是输出字符流的⽗类，它是⼀个抽象类:
+1. Writer是输出字符流的⽗类，它是一个抽象类:
     ```java
     public void write(int c) throws IOException
-    讲解：直接将int型数据作为参数的话，是不会写⼊数字的，⽽是现将数字按照ascll码表转换为相应的字符，然后写⼊
+    讲解：直接将int型数据作为参数的话，是不会写⼊数字的，而是现将数字按照ascll码表转换为相应的字符，然后写⼊
 
     public void write(String str) throws IOException
-    讲解：要想实现数字和中⽂的写⼊，必须要⽤String为参数的Write
+    讲解：要想实现数字和中文的写⼊，必须要用String为参数的Write
 
     public abstract void write(char cbuf[], int off, int len) throws  IOException
-    讲解：将cbuf字符数组的⼀部分写⼊到流中，但能不能写len个字符取决于cbuf中是否有那么多
+    讲解：将cbuf字符数组的一部分写⼊到流中，但能不能写len个字符取决于cbuf中是否有那么多
 
     void flush() throws IOException
-    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊⽂件，
-    但是⼀般还有⼀部分有可能会留在内存这个缓冲区中, 所以需要调⽤flush空缓冲区数据。
+    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊文件，
+    但是一般还有一部分有可能会留在内存这个缓冲区中, 所以需要调用flush空缓冲区数据。
     对⽐BufferWriter,它需要实时查表，效率低，其实缓冲区IO的各个都有，只不过很⼩被忽略,
     OutputStream都有flush⽅法，看⼦类是否有重写
 
@@ -322,16 +322,16 @@
     - FileWriter 用来写出字符文件的实现类:
         ```java
         public FileWriter(String fileName) throws IOException
-        讲解：如果⽂件不存在，这会⾃动创建。如果⽂件存在，则会覆盖
+        讲解：如果文件不存在，这会⾃动创建。如果文件存在，则会覆盖
 
         public FileWriter(File file) throws IOException
-        讲解：如果⽂件不存在，这会⾃动创建。如果⽂件存在，则会覆盖
+        讲解：如果文件不存在，这会⾃动创建。如果文件存在，则会覆盖
 
         public FileWriter(String fileName, boolean append) throws  IOException
-        讲解：加⼊true参数，会实现对⽂件的续写,使用false则会实现对⽂件的覆盖
+        讲解：加⼊true参数，会实现对文件的续写,使用false则会实现对文件的覆盖
 
         public FileWriter(File file, boolean append) throws IOException
-        讲解：加⼊true参数，会实现对⽂件的续写,使用false则会实现对⽂件的覆盖
+        讲解：加⼊true参数，会实现对文件的续写,使用false则会实现对文件的覆盖
         ```
     - 案例:
         ```java
@@ -350,27 +350,27 @@
 ## 字符缓冲输入输出流
 1. Buffered Reader字符缓冲输入流
     - 为了提高了单个字符读写的效率，进行字符批量的读写; 为了提高字符流读写的效率，引⼊了缓冲机制
-    - 采⽤包装设计模式（锦上添花）
-    - 简介：当BufferedReader在读取文本文件时，会先尽量从⽂件中读⼊字符数据并放满缓冲区，⽽之后若使⽤read()⽅法，会先从缓冲区中进行读取。如果缓冲区数据不⾜，才会再从⽂件中读取
+    - 采用包装设计模式（锦上添花）
+    - 简介：当BufferedReader在读取文本文件时，会先尽量从文件中读⼊字符数据并放满缓冲区，而之后若使用read()⽅法，会先从缓冲区中进行读取。如果缓冲区数据不⾜，才会再从文件中读取
     - 构造函数:
         ```java
         BufferedReader(Reader in)
         BufferedReader(Reader in, int sz)
-        //讲解：创建⼀个使⽤指定⼤⼩输⼊缓冲区的缓冲字符输⼊流。
+        //讲解：创建一个使用指定⼤⼩输⼊缓冲区的缓冲字符输⼊流。
         ```
-    - 常⽤API:
+    - 常用API:
         ```java
         boolean ready()
-        //讲解：判断此流是否已准备好被读取，依赖其他流，所以⼀般需要做判断
+        //讲解：判断此流是否已准备好被读取，依赖其他流，所以一般需要做判断
 
         int read()
         //讲解：读取单个字符
 
         int read(char[] cbuf, int off, int len) 
-        //讲解：读取⼀部分字符到数组⾥面，从数组下标off处放置length⻓度的字符
+        //讲解：读取一部分字符到数组⾥面，从数组下标off处放置length⻓度的字符
         
         String readLine()
-        //讲解:读取⼀整行⽂本行，返回⼀整行字符串，如果读到行尾了就返回null,注意返回的⼀行字符中不包含换行符
+        //讲解:读取一整行文本行，返回一整行字符串，如果读到行尾了就返回null,注意返回的一行字符中不包含换行符
 
         void close() 
         //讲解：关闭流释放资源
@@ -413,7 +413,7 @@
         br.close();
         ```
 2. BufferedWriter:
-    - 简介：写⼊的数据并不会先输出到⽬的地，⽽是先存储⾄缓冲区中。如果缓冲区中的数据满了，才会⼀次对⽬的地进行写出
+    - 简介：写⼊的数据并不会先输出到⽬的地，而是先存储⾄缓冲区中。如果缓冲区中的数据满了，才会一次对⽬的地进行写出
     - 构造函数:
         ```java
         BufferedWriter(Writer out) 
@@ -422,22 +422,22 @@
     - 常用API:
         ```java
         void write(int c)
-        讲解：写⼊⼀个字符,会根据码表进行转换
+        讲解：写⼊一个字符,会根据码表进行转换
 
         void write(char[] cbuf, int off, int len)
-        讲解：写⼊字符数组的⼀部分，通过off和len控制。
+        讲解：写⼊字符数组的一部分，通过off和len控制。
 
         void write(String s, int off, int len) 
-        讲解：写⼊字符数组的⼀部分，通过off和len控制。
+        讲解：写⼊字符数组的一部分，通过off和len控制。
 
         void newLine() 
-        讲解：写如⼀个换行符合
+        讲解：写如一个换行符合
 
         void close() 
         讲解：关闭输⼊流并释放与该流关联的系统资源
 
         void flush()
-        讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊⽂件，但是⼀般还有⼀部分有可能会留在内存这个缓冲区中, 所以需要调⽤flush空缓冲区数据。
+        讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊文件，但是一般还有一部分有可能会留在内存这个缓冲区中, 所以需要调用flush空缓冲区数据。
         ```
     - 案例:
         ```java
@@ -460,13 +460,13 @@
 # 字符流字节流桥梁
 ## 背景
 1. 计算机存储的单位是字节，从持久设备读取到程序中是解码，从程序写到持久设备中是编码不管是编码还是解码，不同字符集编解码成 字符 需要不同的个数，因此字节流读取容易出错，⽐如乱码。
-2. 因此需要⼀个流，把字节流读取的字节进行缓冲后，在通过字符集解码成字符返回
+2. 因此需要一个流，把字节流读取的字节进行缓冲后，在通过字符集解码成字符返回
 ## InputStreamReader
 1. 简介: 
-    将字节流转换为字符流, 字节流通向字符流的桥梁,如果不指定字符集编码，则解码过程将使⽤平台默认的字符编码，如：UTF-8。文本文件存储是A编码，然后如果以B编码进行读取则会乱码。
+    将字节流转换为字符流, 字节流通向字符流的桥梁,如果不指定字符集编码，则解码过程将使用平台默认的字符编码，如：UTF-8。文本文件存储是A编码，然后如果以B编码进行读取则会乱码。
 2. 构造函数:
     ```java
-    //使⽤系统默认编码集
+    //使用系统默认编码集
     public InputStreamReader(InputStream in)
     //指定指定编码集创建对象
     public InputStreamReader(InputStream in, String charsetName)
@@ -476,7 +476,7 @@
     int read()
     讲解：读取单个字符
     int read(char[] cbuf, int off, int len) 
-    讲解：读取⼀部分字符到数组⾥面，从数组下标off处放置length⻓度的字符
+    讲解：读取一部分字符到数组⾥面，从数组下标off处放置length⻓度的字符
     int read(char[] cbuf)
     讲解：将读取到的字符存到数组中，返回读取的字符数
     void close() 
@@ -503,10 +503,10 @@
     ```
 ## OutputStreamWriter
 1. 简介：
-    将字符流转换为字节流(看源码解释), 字符流通向字节流的桥梁,如果不指定字符集编码，则编码过程将使⽤平台默认的字符编码，如：GBK
+    将字符流转换为字节流(看源码解释), 字符流通向字节流的桥梁,如果不指定字符集编码，则编码过程将使用平台默认的字符编码，如：GBK
 2. 构造函数：
     ```java
-    //使⽤系统默认编码集
+    //使用系统默认编码集
     public OutputStreamWriter(OutputStream out)
     //指定指定编码集创建对象
     public OutputStreamWriter(OutputStream out, String charsetName)
@@ -514,17 +514,17 @@
 3. 常用API:
     ```java
     void write(int c)
-    讲解：写⼊⼀个字符
+    讲解：写⼊一个字符
     void write(char[] cbuf, int off, int len)
-    讲解：写⼊字符数组的⼀部分，通过off和len控制
+    讲解：写⼊字符数组的一部分，通过off和len控制
     void write(String s, int off, int len) 
-    讲解：写⼊字符数组的⼀部分，通过off和len控制。
+    讲解：写⼊字符数组的一部分，通过off和len控制。
     void newLine() 
-    讲解：写如⼀个换行符合
+    讲解：写如一个换行符合
     void close() 
     讲解：关闭输⼊流并释放与该流关联的系统资源
     void flush()
-    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊⽂件，但是⼀般还有⼀部分有可能会留在内存这个缓冲区中, 所以需要调⽤flush空缓冲区数据
+    讲解：write是写到缓冲区中，可以认为是内存中,当缓冲区满时系统会⾃动将缓冲区的内容写⼊文件，但是一般还有一部分有可能会留在内存这个缓冲区中, 所以需要调用flush空缓冲区数据
     ```
 4. 案例:
     ```java
