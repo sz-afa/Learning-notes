@@ -609,5 +609,21 @@ try {
 3. try()⾥⾯可以定义多个资源，它们的关闭顺序是,最后在try()定义的资源先关闭。
 4. 代码:
 ```java
+String dir = "D:\\";
+String name = "c.txt";
+try(
+        FileInputStream is = new FileInputStream(dir+name);
+        BufferedInputStream bis = new BufferedInputStream(is);
+        FileOutputStream os = new FileOutputStream(dir+"copy.txt");
+        BufferedOutputStream bos = new BufferedOutputStream(os);
+    ) {
+    int size;
+    byte[] buf = new byte[1024];
+    while ((size = bis.read(buf))!=-1){
+        bos.write(buf,0,size);
+    }
 
+}catch (Exception e){
+    e.printStackTrace();
+}
 ```
