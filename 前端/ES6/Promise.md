@@ -1,3 +1,6 @@
+# Promise
+## 介绍
+为了解决"回调地狱"的问题，提出了Promise对象
 ### 1
 ```javascript
 function f(){
