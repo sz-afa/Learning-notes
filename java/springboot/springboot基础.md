@@ -1,4 +1,21 @@
 
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+- [SpringBoot接口Http协议](#springboot接口http协议)
+  - [SpringBoot2.xHTTP请求配置](#springboot2xhttp请求配置)
+    - [SpringBoot2.xHTTP请求注解讲解和简化注解配置技巧](#springboot2xhttp请求注解讲解和简化注解配置技巧)
+  - [请求](#请求)
+    - [get请求](#get请求)
+    - [post请求](#post请求)
+    - [put请求](#put请求)
+    - [delete请求](#delete请求)
+  - [SpringBoot2.x目录文件结构讲解](#springboot2x目录文件结构讲解)
+    - [SpringBoot目录文件结构和官方推荐的目录规范](#springboot目录文件结构和官方推荐的目录规范)
+
+<!-- /code_chunk_output -->
+
 ## SpringBoot接口Http协议
 ### SpringBoot2.xHTTP请求配置
 #### SpringBoot2.xHTTP请求注解讲解和简化注解配置技巧
