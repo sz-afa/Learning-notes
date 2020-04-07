@@ -127,7 +127,7 @@ public class SpringDemo3 {
 
 ## 2.PointcutAdvice
 ### 说明
-普通advice不够灵活。通常用带切入点的切面。**对符合条件的方法进行拦截**
+普通advice不够灵活。通常用带切入点的切面。**对符合条件的方法进行拦截** <br>
 实现类:
 - DefaultPointcutAdvisorz 最常用的切面类型，通过任意Pointcut和Advice组合定义切面。
 - `jdkRegexpMethdPointcut` 构造正则表达式切点。
@@ -200,11 +200,11 @@ applicationContext.xml
     1. DefaultAdvisorAutoProxyCreator `根据Advisor本身包含信息创建代理`
     1. AnnotationAwareAspectJAutoProxyCreator 基于bean中的AspcetJ注解进行代理
 ### 案例1(BeanNameAutoProxyCreator)
-[CustomerDao.java](#CustomerDao)
-[MyAroundAdvice.java](#MyAroundAdvice)
-[StudentDao.java](#StudenDao)
-[StudentDaoImpl.java](#StudenDaoImpl)
-[MyBeforeAdvice.java](#MyBeforeAdvice)
+[CustomerDao.java](#CustomerDao)    <br>
+[MyAroundAdvice.java](#MyAroundAdvice)<br>
+[StudentDao.java](#StudenDao)<br>
+[StudentDaoImpl.java](#StudenDaoImpl)<br>
+[MyBeforeAdvice.java](#MyBeforeAdvice)<br>
 applicationContext.xml
 ```xml
     <!--配置目标类-->
