@@ -41,7 +41,7 @@
 
 ## 1.普通Advice
 ### 说明
-**对目标类的所有方法进行拦截。（不够灵活）**
+对目标类的 **所有方法** 进行拦截。（不够灵活）
 ### 案例1(有接口)
 StudenDao接口 <span id = "StudenDao"></span>
 ```java
@@ -127,13 +127,13 @@ public class SpringDemo3 {
 
 ## 2.PointcutAdvice
 ### 说明
-普通advice不够灵活。通常用带切入点的切面。**对符合条件的方法进行拦截** <br>
+普通advice不够灵活。通常用带切入点的切面。**对符合匹配条件的类或方法进行拦截** <br>
 实现类:
 - DefaultPointcutAdvisorz 最常用的切面类型，通过任意Pointcut和Advice组合定义切面。
 - `jdkRegexpMethdPointcut` 构造正则表达式切点。
 
 ### 案例1(无接口)
-CustomerDao接口 <span id = "CustomerDao"></span>
+CustomerDao <span id = "CustomerDao"></span>
 ```java
 package demo4;
 
@@ -266,4 +266,407 @@ public class SpringDemo5 {
 环绕后
 ```
 ### 案例2 (DefaultAdvisorAutoProxyCreator)
+[CustomerDao.java](#CustomerDao)    <br>
+[MyAroundAdvice.java](#MyAroundAdvice)<br>
+[StudentDao.java](#StudenDao)<br>
+[StudentDaoImpl.java](#StudenDaoImpl)<br>
+[MyBeforeAdvice.java](#MyBeforeAdvice)<br>
+applicationContext.xml
+```xml
+    <!--配置目标类-->
+    <bean id="customerDao" class="demo6.CustomerDao" />
+    <bean id="studentDao" class="demo6.StudentDaoImpl" />
+
+    <!--配置通知-->
+    <bean id="myAroundAdvice" class="demo6.MyAroundAdvice" />
+    <bean id="myBeforeAdvice" class="demo6.MyBeforeAdvice" />
+
+    <!--配置切面-->
+    <bean id="myAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <!-- 为demo6.CustomerDao类的find方法织入myAroundAdvice环绕通知  -->
+        <property name="pattern" value="demo6\.CustomerDao\.find" />
+        <property name="advice" ref="myAroundAdvice" />
+    </bean>
+
+    <!--配置切面-->
+    <bean id="myAdvisor2" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <!-- 为demo6.StudentDao的find方法织入myBeforeAdvice前置通知  -->
+        <property name="pattern" value="demo6\.StudentDao\.find" />
+        <property name="advice" ref="myBeforeAdvice" />
+    </bean>
+
+    <!--自动根据切面信息产生代理-->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+```
+测试类
+```java
+package demo6;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:applicationContext.xml")
+public class SpringDemo6 {
+    @Resource(name = "customerDao")
+    private CustomerDao customerDao;
+
+    @Resource(name = "studentDao")
+    private StudentDao studentDao;
+
+    @Test
+    public void demo(){
+        customerDao.find();
+        studentDao.find();
+    }
+}
+```
+控制台输出
+```
+环绕前
+查询客户....
+环绕后
+前置通知
+查找学生....
+```
 # AspcetJ
+## 注解方式
+### 说明
+除了基本的spring核心包以外，还需要引入spring-aop、aopalliance、aspectjweaver、spring-aspects
+applicationContext.xml开启aspectJ自动代理。
+```xml
+<aop:aspectj-autoproxy/>
+```
+#### 通知类型:
+- @Before 前置通知，相当于BeforeAdvice
+- @AfterRetruning 后置通知，相当于AfterReturningAdvice
+- @Around环绕通知，相当于MethodInterceptor
+- @AfterThrowing 异常抛出通知，相当于ThrowAdvice
+- @After 最终final通知，不管是否异常，该通知都会执行
+- `@DeclareParents 引介通知，相当于IntroductionInterceptor(不要求掌握)`
+#### execution:
+- 语法: execution(<访问修饰符>?<返回类型><方法名>(<参数>)<异常>) `<访问修饰符>是可有可无`
+- 案例1: 匹配所有类public方法 execution( public * *(..) )
+- 案例2: 匹配指定包下所有类方法 execution( * com.company.dao.*(..) ) `不包含子包`
+- 案例3: 匹配指定包下所有类方法 execution( * com.company.dao..*(..) ) `包含子包`
+- 案例4: 匹配指定类的所有方法 execution( * com.company.dao.UserDaoImpl.*(..) )
+- 案例5: 匹配实现特定接口所有类方法 execution( * com.company.dao.UserDao+.*(..) )
+- 案例6: 匹配所有save开头的方法 execution( * save*(..) )
+### @Before前置通知
+目标类ProductDao.java <span id = "aspectjProductDao"></span>
+```java
+package demo7;
+
+public class ProductDao {
+    public void  save(){
+        System.out.println("保存商品..");
+    }
+    public void find(){
+        System.out.println("查找商品..");
+    }
+}
+```
+通知类MyAspectJAnno.java
+```java
+package demo7;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+
+/**
+ * 切面类
+ */
+@Aspect
+public class MyAspectJAnno {
+
+    @Before( value = " execution( * demo7.ProductDao.*(..) ) " )
+    public void before(JoinPoint joinPoint){
+        System.out.println("joinPoint :"+joinPoint);
+        System.out.println("====前置通知====");
+    }
+}
+```
+测试类
+```java
+package demo7;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:applicationContextAop.xml")
+public class aspectjDemo1 {
+
+    @Autowired
+    private ProductDao productDao;
+
+    @Test
+    public void demo1(){
+        productDao.save();
+        productDao.find();
+    }
+}
+```
+applicationContextAop.xml
+```xml
+    <!--  开启AspectJ注解  -->
+    <aop:aspectj-autoproxy/>
+
+    <!--  目标类  -->
+    <bean id="productDao" class="demo7.ProductDao" />
+
+    <!--  定义切面  -->
+    <bean class="demo7.MyAspectJAnno" />
+```
+控制台输出
+```
+joinPoint :execution(void demo7.ProductDao.save())
+====前置通知====
+保存商品..
+joinPoint :execution(void demo7.ProductDao.find())
+====前置通知====
+查找商品..
+```
+### @AfterReturning后置通知，可以获取方法的返回值
+MyAspectJAnno.java切面类
+```java
+package demo7;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+
+/**
+ * 切面类
+ */
+@Aspect
+public class MyAspectJAnno {
+    //匹配ProductDao的find方法,通过returning属性定义返回值，作为参数。
+    @AfterReturning( value = " execution( * demo7.ProductDao.find(..) ) " ,returning = "result")
+    public void afterReturning(JoinPoint joinPoint,Object result){
+        System.out.println("====后置通知====");
+        System.out.println("joinPoint:"+joinPoint);
+        System.out.println("目标类返回值:"+result);
+    }
+}
+```
+[ProductDao.java目标类](#aspectjProductDao)<br>
+
+测试类
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:applicationContextAop.xml")
+public class aspectjDemo1 {
+
+    @Autowired
+    private ProductDao productDao;
+
+    @Test
+    public void demo1(){
+        productDao.find();
+    }
+}
+```
+控制台输出
+```
+查找商品..
+====后置通知====
+joinPoint:execution(String demo7.ProductDao.find())
+目标类返回值:product
+```
+### @Around环绕通知，可以打断目标方法的执行。
+MyAspectJAnno.java切面类
+```java
+    @Around( value = " execution( * demo7.ProductDao.find(..) )")
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+        System.out.println("====环绕前====");
+        Object obj = joinPoint.proceed();//执行目标方法，若该方法抛出异常环绕后通知可能不会执行（当前直接throws错误必定不会执行环绕后通知）。
+        System.out.println("====环绕后====");
+        System.out.println("obj:"+obj);
+        return obj;
+    }
+```
+[ProductDao.java目标类](#aspectjProductDao)<br>
+
+测试类
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:applicationContextAop.xml")
+public class aspectjDemo1 {
+
+    @Autowired
+    private ProductDao productDao;
+
+    @Test
+    public void demo1(){
+        productDao.find();
+    }
+}
+```
+控制台输出
+```
+====环绕前====
+查找商品..
+====环绕后====
+obj:product
+```
+### @AfterThrowing 异常抛出通知（没有异常就不会执行）
+ProductDao.java目标类
+```java
+package demo7;
+
+public class ProductDao {
+    public String find(){
+        System.out.println("查找商品..");
+        int i = 1/0;
+        return "product";
+    }
+}
+```
+MyAspectJAnno.java切面类
+```java
+package demo7;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
+
+/**
+ * 切面类
+ */
+@Aspect
+public class MyAspectJAnno {
+    @Around( value = " execution( * demo7.ProductDao.find(..) )" )
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+        System.out.println("====环绕前====");
+        Object obj = joinPoint.proceed();//执行目标方法，若该方法抛出异常，如果不是trycatch则环绕后通知不会执行。
+        System.out.println("====环绕后====");
+        System.out.println("obj:"+obj);
+        return obj;
+    }
+
+    @AfterThrowing( value = " execution( * demo7.ProductDao.find(..) )" ,throwing = "error")
+    public void afterThrowing(Throwable error){
+        System.out.println("====异常抛出通知====");
+        System.out.println(error.getMessage());
+    }
+}
+```
+测试类**同上**<br>
+控制台输出
+```
+====环绕前====
+查找商品..
+====异常抛出通知====
+/ by zero
+
+java.lang.ArithmeticException: / by zero
+```
+### @After最终通知（无论目标方法是否有异常都会执行。类似finally）
+ProductDao.java目标类**同上**<br>
+MyAspectJAnno.java切面类
+```java
+package demo7;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
+
+/**
+ * 切面类
+ */
+@Aspect
+public class MyAspectJAnno {
+    @Around( value = " execution( * demo7.ProductDao.find(..) )" )
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+        System.out.println("====环绕前====");
+        Object obj = joinPoint.proceed();//执行目标方法，若该方法抛出异常，如果不是trycatch则环绕后通知不会执行。
+        System.out.println("====环绕后====");
+        System.out.println("obj:"+obj);
+        return obj;
+    }
+
+    @AfterThrowing( value = " execution( * demo7.ProductDao.find(..) )" ,throwing = "error")
+    public void afterThrowing(Throwable error){
+        System.out.println("====异常抛出通知====");
+        System.out.println(error.getMessage());
+    }
+
+    @After( value = " execution( * demo7.ProductDao.find(..) )" )
+    public void after(){
+        System.out.println("====最终通知====");
+    }
+}
+```
+测试类**同上**<br>
+控制台输出
+```
+====环绕前====
+查找商品..
+====最终通知====
+====异常抛出通知====
+/ by zero
+
+java.lang.ArithmeticException: / by zero
+```
+### @Pointcut
+#### 说明
+- 在每个通知内定义切点，会造成工作量大不容易维护，对于重复的切点，可以使用@Pointcut进行定义
+- 切点方法: private void 无参数方法，方法名为切点名。
+- 当通知多个切点时，可以使用 || 进行连接
+MyAspectJAnno.java
+```java
+    @Before( value = "myPointcut1() || myPointcut2()" )
+    public void before(JoinPoint joinPoint){
+        System.out.println("====前置通知===="+joinPoint);
+    }
+
+    @AfterReturning( value = "myPointcut1()" ,returning = "result")
+    public void afterReturning(JoinPoint joinPoint,Object result){
+        System.out.println("====后置通知===="+joinPoint);
+        System.out.println("目标类返回值:"+result);
+    }
+
+    @Pointcut( value = " execution( * demo7.ProductDao.find(..) )" )
+    private void myPointcut1(){}
+
+    @Pointcut( value = " execution( * demo7.ProductDao.save(..) )" )
+    private void myPointcut2(){}
+```
+测试类
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:applicationContextAop.xml")
+public class aspectjDemo1 {
+
+    @Autowired
+    private ProductDao productDao;
+
+    @Test
+    public void demo1(){
+        productDao.save();
+        productDao.find();
+    }
+}
+```
+控制台输出
+```
+====前置通知====execution(void demo7.ProductDao.save())
+保存商品..
+====前置通知====execution(String demo7.ProductDao.find())
+查找商品..
+====后置通知====execution(String demo7.ProductDao.find())
+目标类返回值:product
+```
+## xml方式
+
+### 说明
+### 案例1
