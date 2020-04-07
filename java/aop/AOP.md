@@ -42,14 +42,14 @@
 ## 1.普通Advice
 ### 说明
 **对目标类的所有方法进行拦截。（不够灵活）**
-### 案例1
-StudenDao接口
+### 案例1(有接口)
+StudenDao接口 <span id = "StudenDao"></span>
 ```java
 public interface StudentDao {
     public void find();
 }
 ```
-StudenDao实现类StudenDaoImpl
+StudenDao实现类StudenDaoImpl <span id = "StudenDaoImpl"></span>
 ```java
 public class StudentDaoImpl implements StudentDao{
     @Override
@@ -58,7 +58,7 @@ public class StudentDaoImpl implements StudentDao{
     }
 }
 ```
-前置通知类
+MyBeforeAdvice.java前置通知类  <span id = "MyBeforeAdvice"></span>
 ```java
 import org.springframework.aop.MethodBeforeAdvice;
 import java.lang.reflect.Method;
@@ -127,4 +127,143 @@ public class SpringDemo3 {
 
 ## 2.PointcutAdvice
 ### 说明
-### 案例1
+普通advice不够灵活。通常用带切入点的切面。**对符合条件的方法进行拦截**
+实现类:
+- DefaultPointcutAdvisorz 最常用的切面类型，通过任意Pointcut和Advice组合定义切面。
+- `jdkRegexpMethdPointcut` 构造正则表达式切点。
+
+### 案例1(无接口)
+CustomerDao接口 <span id = "CustomerDao"></span>
+```java
+package demo4;
+
+public class CustomerDao {
+    public void find(){
+        System.out.println("查询客户....");
+    }
+}
+```
+MyAroundAdvice环绕通知类<span id = "MyAroundAdvice"></span>
+```java
+package demo4;
+
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+
+public class MyAroundAdvice implements MethodInterceptor {
+    @Override
+    public Object invoke(MethodInvocation methodInvocation) throws Throwable {
+        System.out.println("环绕前");
+        Object obj = methodInvocation.proceed();
+        System.out.println("环绕后");
+        return obj;
+    }
+}
+```
+applicationContext.xml
+```xml
+
+    <!--配置目标类-->
+    <bean id="customerDao" class="demo4.CustomerDao" />
+
+    <!--配置通知-->
+    <bean id="myAroundAdvice" class="demo4.MyAroundAdvice" />
+
+    <!--一般的切面是使用通知作为切面的，因为要对目标类的某个方法进行增强就需要配置一个带有切入点的一个切面-->
+    <bean id="myAdvice" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor" >
+        <!--  正则表达式匹配需要织入的方法  .任意字符 *任意次数   -->
+        <property name="pattern" value=".*find.*"/>
+        <!--  匹配多个正则表达式   -->
+        <!-- <property name="patterns" value=".*find.*,.*save.*" />  -->
+        <property name="advice" ref="myAroundAdvice" />
+    </bean>
+
+
+    <!--配置产生代理-->
+    <bean id="customerDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="customerDao" />
+        <property name="proxyTargetClass" value="true" />
+        <property name="interceptorNames" value="myAdvice" />
+    </bean>
+```
+控制台输出
+```
+环绕前
+查询客户....
+环绕后
+```
+## 3.自动创建代理
+### 说明
+- 上述两个案例中，每个代理都是通过ProxyFactoryBean织入切面代理，在实际开发中，非常多的bean都配置ProxyFactoryBean工作量太大
+- 解决方案: **自动代理**:
+    1. BeanNameAutoProxyCreator `根据bean名称创建代理`
+    1. DefaultAdvisorAutoProxyCreator `根据Advisor本身包含信息创建代理`
+    1. AnnotationAwareAspectJAutoProxyCreator 基于bean中的AspcetJ注解进行代理
+### 案例1(BeanNameAutoProxyCreator)
+[CustomerDao.java](#CustomerDao)
+[MyAroundAdvice.java](#MyAroundAdvice)
+[StudentDao.java](#StudenDao)
+[StudentDaoImpl.java](#StudenDaoImpl)
+[MyBeforeAdvice.java](#MyBeforeAdvice)
+applicationContext.xml
+```xml
+    <!--配置目标类-->
+    <bean id="customerDao" class="demo5.CustomerDao" />
+    <bean id="studentDao" class="demo5.StudentDaoImpl" />
+
+    <!--配置通知-->
+    <bean id="myAroundAdvice" class="demo5.MyAroundAdvice" />
+    <bean id="myBeforeAdvice" class="demo5.MyBeforeAdvice" />
+
+    <!--配置产生代理-->
+    <bean id="customerDaoProxy" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+        <!-- 对所有Dao结尾的目标类进行代理  -->
+        <property name="beanNames" value="*Dao" />
+        <property name="interceptorNames" >
+            <list>
+                <value>myBeforeAdvice</value>
+                <value>myAroundAdvice</value>
+            </list>
+        </property>
+    </bean>
+```
+测试类
+```java
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:applicationContext3.xml")
+public class SpringDemo5 {
+
+    @Resource(name = "customerDao")
+    private CustomerDao customerDao;
+
+    @Resource(name = "studentDao")
+    private StudentDao studentDao;
+
+    @Test
+    public void demo(){
+        customerDao.find();
+        studentDao.find();
+    }
+
+}
+```
+控制台输出
+```
+前置通知....
+环绕前
+查询客户....
+环绕后
+前置通知....
+环绕前
+查找学生
+环绕后
+```
+### 案例2 (DefaultAdvisorAutoProxyCreator)
+# AspcetJ
