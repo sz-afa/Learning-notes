@@ -667,6 +667,143 @@ public class aspectjDemo1 {
 目标类返回值:product
 ```
 ## xml方式
-
-### 说明
 ### 案例1
+CustomerDao.java接口
+```java
+package demo8;
+
+public interface CustomerDao {
+    public void save();
+    public String find();
+    public void delete();
+}
+```
+CustomerDao接口实现类CustomerDaoImpl.java
+```java
+package demo8;
+
+public class CustomerDaoImpl implements CustomerDao {
+    @Override
+    public void save() {
+        System.out.println("保存客户...");
+    }
+    @Override
+    public String find() {
+        System.out.println("查询客户...");
+        return "hello";
+    }
+    @Override
+    public void delete() {
+        System.out.println("删除客户...");
+        int i=1/0;
+    }
+}
+
+```
+MyAspectXml.java切面类
+```java
+package demo8;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+
+public class MyAspectXml {
+
+    public void before1(JoinPoint joinPoint){
+        System.out.println("===前置通知==="+joinPoint);
+    }
+
+    public void afterRetruning1(JoinPoint joinPoint,Object result){
+        System.out.println("===后置通知==="+joinPoint);
+        System.out.println("返回值:"+result);
+    }
+
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+        System.out.println("===环绕前==="+joinPoint);
+        Object obj = joinPoint.proceed();
+        System.out.println("===环绕后==="+joinPoint);
+        //改变return的返回值，会影响调用该方法的返回值。
+        return obj;
+    }
+
+    public void afteThrow(JoinPoint joinPoint,Throwable error){
+        System.out.println("===捕获异常==="+joinPoint);
+        System.out.println("异常:"+error.getMessage());
+    }
+
+
+    public void after(JoinPoint joinPoint){
+        System.out.println("===最终通知==="+joinPoint);
+    }
+}
+```
+applicationContext.xml
+```xml
+    <!--  配置目标类  -->
+    <bean id="customerDao" class="demo8.CustomerDaoImpl" />
+
+    <!--  配置切面类  -->
+    <bean id="myAspectXml" class="demo8.MyAspectXml" />
+
+    <!-- aop相关配置   -->
+    <aop:config>
+        <!-- 配置切入点 -->
+        <aop:pointcut id="pointCut1" expression=" execution(* demo8.CustomerDao.save(..))"/>
+        <aop:pointcut id="pointCut2" expression=" execution(* demo8.CustomerDao.find(..)) "/>
+        <aop:pointcut id="pointCut3" expression=" execution(* demo8.CustomerDao.delete(..)) "/>
+        <!-- 配置AOP的切面 -->
+        <aop:aspect ref="myAspectXml">
+            <!-- 配置前置通知 -->
+            <aop:before method="before1" pointcut-ref="pointCut1" />
+            <!-- 配置后置通知 -->
+            <aop:after-returning method="afterRetruning1" pointcut-ref="pointCut2" returning="result" />
+            <!-- 配置环绕通知 -->
+            <aop:around method="around" pointcut-ref="pointCut2" />
+            <!-- 异常抛出通知 -->
+            <aop:after-throwing method="afteThrow" pointcut-ref="pointCut3" throwing="error" />
+            <!-- 最终通知 -->
+            <aop:after method="after" pointcut-ref="pointCut3" />
+        </aop:aspect>
+    </aop:config>
+```
+测试类
+```java
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:applicationContext.xml")
+public class SpringAOPXMLTest {
+    @Autowired
+    private CustomerDao customerDao;
+    @Test
+    public void demo1(){
+        customerDao.save();
+        System.out.println("");
+        customerDao.find();
+        System.out.println("");
+        customerDao.delete();
+    }
+}
+```
+控制台输出
+```
+===前置通知===execution(void demo8.CustomerDao.save())
+保存客户...
+
+===环绕前===execution(String demo8.CustomerDao.find())
+查询客户...
+===环绕后===execution(String demo8.CustomerDao.find())
+===后置通知===execution(String demo8.CustomerDao.find())
+返回值:hello
+
+删除客户...
+===最终通知===execution(void demo8.CustomerDao.delete())
+===捕获异常===execution(void demo8.CustomerDao.delete())
+异常:/ by zero
+
+java.lang.ArithmeticException: / by zero
+```
