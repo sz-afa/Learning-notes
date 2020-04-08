@@ -1,4 +1,43 @@
-[TOC]
+
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+- [概念](#概念)
+  - [AOP实现方式](#aop实现方式)
+    - [预编译](#预编译)
+    - [运行期动态代理](#运行期动态代理)
+  - [AOP相关概念](#aop相关概念)
+  - [Advice类型](#advice类型)
+  - [有接口和无接口的Spring AOP实现区别](#有接口和无接口的spring-aop实现区别)
+- [SpringAOP](#springaop)
+  - [1.普通Advice](#1普通advice)
+    - [说明](#说明)
+    - [案例1(有接口)](#案例1有接口)
+  - [2.PointcutAdvice](#2pointcutadvice)
+    - [说明](#说明-1)
+    - [案例1(无接口)](#案例1无接口)
+  - [3.自动创建代理](#3自动创建代理)
+    - [说明](#说明-2)
+    - [案例1(BeanNameAutoProxyCreator)](#案例1beannameautoproxycreator)
+    - [案例2 (DefaultAdvisorAutoProxyCreator)](#案例2-defaultadvisorautoproxycreator)
+- [AspcetJ](#aspcetj)
+  - [注解方式](#注解方式)
+    - [说明](#说明-3)
+      - [通知类型:](#通知类型)
+      - [execution:](#execution)
+    - [@Before前置通知](#before前置通知)
+    - [@AfterReturning后置通知，可以获取方法的返回值](#afterreturning后置通知可以获取方法的返回值)
+    - [@Around环绕通知，可以打断目标方法的执行。](#around环绕通知可以打断目标方法的执行)
+    - [@AfterThrowing 异常抛出通知（没有异常就不会执行）](#afterthrowing-异常抛出通知没有异常就不会执行)
+    - [@After最终通知（无论目标方法是否有异常都会执行。类似finally）](#after最终通知无论目标方法是否有异常都会执行类似finally)
+    - [@Pointcut](#pointcut)
+      - [说明](#说明-4)
+  - [xml方式](#xml方式)
+    - [案例1](#案例1)
+
+<!-- /code_chunk_output -->
+
 
 # 概念
 ## AOP实现方式
