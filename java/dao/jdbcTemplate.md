@@ -3,15 +3,21 @@
 
 <!-- code_chunk_output -->
 
-- [Account](#account)
-- [AccountDao接口](#accountdao接口)
-- [AccountDao接口实现类AccountDaoImpl](#accountdao接口实现类accountdaoimpl)
-- [jdbc.property](#jdbcproperty)
-- [applicationContext.xml](#applicationcontextxml)
-- [测试类](#测试类)
+- [JDBCTemplate](#jdbctemplate)
+  - [说明](#说明)
+  - [Account](#account)
+  - [AccountDao接口](#accountdao接口)
+  - [AccountDao接口实现类AccountDaoImpl](#accountdao接口实现类accountdaoimpl)
+  - [jdbc.property](#jdbcproperty)
+  - [applicationContext.xml](#applicationcontextxml)
+  - [测试类](#测试类)
 
 <!-- /code_chunk_output -->
-
+# JDBCTemplate
+## 说明
+- 为了简化持久化操作，Spring 在JDBC API之上提供了JDBC Template组件。
+- JDBC Template提供统一的模板方法，在保留代码灵活性的基础上，尽量减少持久化代码。
+![对比](./img/img1.png)
 ## Account
 ```java
 @Setter
