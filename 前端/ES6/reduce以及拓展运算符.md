@@ -1,3 +1,21 @@
+
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+- [语法](#语法)
+- [解析initialValue参数](#解析initialvalue参数)
+  - [例子1](#例子1)
+  - [例子2](#例子2)
+- [应用](#应用)
+  - [计算平均数](#计算平均数)
+  - [计算数组中每个元素出现的次数](#计算数组中每个元素出现的次数)
+  - [数组去重](#数组去重)
+  - [将二维数组转化为一维](#将二维数组转化为一维)
+  - [对象里的属性求和](#对象里的属性求和)
+
+<!-- /code_chunk_output -->
+
 ## 语法
 ```javascript
 arr.reduce(callback,[initialValue])
@@ -20,7 +38,7 @@ console.log(arr, sum);
 6 4 3
 [1, 2, 3, 4] 10
 ```
-这个例子index是从0开始的，第一次的prev的值是我们设置的初始值0，数组长度是4，reduce函数循环4次。
+这个例子index是从0开始的，第一次的prev的值是默认初始值0，数组长度是4，reduce函数循环4次。
 ### 例子2
 ```javascript
 var  arr = [1, 2, 3, 4];
