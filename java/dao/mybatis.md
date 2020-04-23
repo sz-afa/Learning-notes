@@ -18,6 +18,13 @@
   - [元素](#元素)
     - [<if\>元素](#if元素)
     - [<choose\>及其子元素](#choose及其子元素)
+    - [<set\>元素](#set元素)
+    - [<foreach\>元素](#foreach元素)
+    - [<bind\>元素](#bind元素)
+- [Mybatis关联映射](#mybatis关联映射)
+  - [一对一](#一对一)
+  - [一堆多](#一堆多)
+  - [多对多](#多对多)
 - [LOG4J输出SQL语句](#log4j输出sql语句)
 - [SqlSessionFactory](#sqlsessionfactory)
   - [说明](#说明)
@@ -28,7 +35,9 @@
   - [说明](#说明-2)
 - [例子](#例子)
   - [案例1](#案例1)
-  - [案例2 ](#案例2-span-id-example2span)
+  - [案例2 (手动映射bean属性和字段名)](#案例2-手动映射bean属性和字段名span-id-example2span)
+  - [案例3 (动态sql)](#案例3-动态sqlspan-id-example3span)
+  - [案例4(一对一关联)](#案例4一对一关联span-id-example4span)
 - [IDEA下Maven无法读取src的XML文件](#idea下maven无法读取src的xml文件)
 
 <!-- /code_chunk_output -->
@@ -126,6 +135,22 @@
 ![](./img/if1.png)<br>
 可用于分页+模糊查询
 ### <choose\>及其子元素
+![](./img/cwo.png)<br>
+### <set\>元素
+- 更新数据的时候使用，可以实现部分字段更新。
+- 还可以去掉拼接sql语句中多余的逗号
+### <foreach\>元素
+![](./img/fe.png)<br>
+### <bind\>元素
+防止sql注入
+# Mybatis关联映射
+## 一对一
+[案例](#example4)
+![](./img/oneone.png)<br>
+![](./img/oneone2.png)<br>
+![](./img/oneone3.png)<br>
+## 一对多
+## 多对多
 # LOG4J输出SQL语句
 导包
 ```xml
@@ -265,14 +290,6 @@ CustomerMapper.xml
     <delete id="delCustomer" parameterType="Integer">
         delete from t_customer where id=#{id}
     </delete>
-
-
-    <select id="findCustomerByIds" parameterType="List" resultType="customer">
-        select * from t_customer where id in
-        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-    </select>
 </mapper>
 ```
 mybatis-config.xml添加CustomerMapper.xml
@@ -401,7 +418,7 @@ public class MybatisTest {
 
 }
 ```
-## 案例2 <span id = "example2"></span>
+## 案例2 (手动映射bean属性和字段名)<span id = "example2"></span>
 User.java
 ```java
 package mybatisDemo1;
@@ -481,6 +498,288 @@ DEBUG [main] - <==      Total: 3
 User(id=1, name=lucy, age=25)
 User(id=2, name=Lili, age=20)
 User(id=3, name=Jim, age=20)
+```
+
+## 案例3 (动态sql)<span id = "example3"></span>
+CustomerMapper2.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace表示命名空间(最好唯一)-->
+<mapper namespace="mybatisDemo1.mapper.Customer2">
+
+    <!--if元素的使用 只要满足if 就会拼接sql-->
+    <select id="findCustomerByNameAndJobs" parameterType="mybatisDemo1.Customer" resultType="mybatisDemo1.Customer" >
+        select * from t_customer where 1=1
+        <if test="username !=null and username!=''">
+            and username like concat('%',#{username},'%')
+        </if>
+        <if test="jobs != null and jobs!=''">
+            and jobs=#{jobs}
+        </if>
+    </select>
+
+    <!--choose,when,otherwise元素的使用-->
+    <!--哪个when满足就只拼接那一个sql语句相当于switch,case,break,default-->
+    <select id="findCustomerByNameOrJobs" parameterType="mybatisDemo1.Customer" resultType="mybatisDemo1.Customer" >
+        select  * from t_customer where 1=1
+        <choose>
+            <when test="username !=null and username!='' ">
+                and username like concat('%',#{username},'%')
+            </when>
+            <when test="jobs != null and jobs!=''">
+                and jobs=#{jobs}
+            </when>
+            <otherwise>
+                and phone is not null
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--set元素-->
+    <update id="updateCustomer" parameterType="mybatisDemo1.Customer">
+        update t_customer
+        <set>
+            <if test="username!=null and username!='' ">
+                username=#{username}
+            </if>
+            <if test="jobs!=null and jobs!='' ">
+                jobs=#{jobs}
+            </if>
+            <if test="phone!=null and phone!='' ">
+                phone=#{phone}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <!--foreach元素-->
+    <select id="findCustomerByIds" parameterType="List" resultType="mybatisDemo1.Customer">
+        select * from t_customer where id in
+        <foreach collection="list" item="id" index="index" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <!--bind元素防止SQL注入，客户名模糊查询-->
+    <select id="findCustomerByName" parameterType="List" resultType="mybatisDemo1.Customer">
+        <!--_parameter.getUsername()也可以写成传入字段的属性名，即username -->
+        <bind name="pattern_username" value="'%' + _parameter.getUsername() + '%'"/>
+        select * from t_customer where username like #{pattern_username}
+    </select>
+</mapper>
+```
+测试类
+MybatisTest2.java
+```java
+package mybatisDemo1;
+
+import org.apache.ibatis.session.SqlSession;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MybatisTest2 {
+
+    SqlSession sqlSession;
+
+    @Before
+    public void init() throws Exception {
+        //利用工具类生成sqlSession;
+        sqlSession = MybatisUtils.getSqlSession();
+    }
+
+    @After
+    public void closeSqlSession(){
+        //最后关闭sqlSession
+        sqlSession.close();
+    }
+
+    @Test
+    public void findCustomerByNameAndJobs(){
+        Customer customer = new Customer();
+        customer.setUsername("toony");
+        customer.setJobs("driver");
+        //SqlSession执行映射文件
+        List<Customer> list = sqlSession.selectList("mybatisDemo1.mapper.Customer2.findCustomerByNameAndJobs",customer);
+
+        for (Customer item : list){
+            System.out.println(item.toString());
+        }
+    }
+
+    @Test
+    public void findCustomerByNameOrJobs(){
+        Customer customer = new Customer();
+        customer.setUsername("toony");
+        customer.setJobs("driver");
+        //SqlSession执行映射文件
+        List<Customer> list = sqlSession.selectList("mybatisDemo1.mapper.Customer2.findCustomerByNameOrJobs",customer);
+
+        for (Customer item : list){
+            System.out.println(item.toString());
+        }
+    }
+
+    @Test
+    public void updateCustomer(){
+        Customer customer = new Customer();
+        customer.setId(5);
+        customer.setUsername("pony");
+
+        int i = sqlSession.update("mybatisDemo1.mapper.Customer2.updateCustomer",customer);
+
+        if(i>0){
+            System.out.println("影响行数:"+i);
+        }else{
+            System.out.println("更新失败");
+        }
+
+        sqlSession.commit();
+    }
+
+    @Test
+    public void getCustomerByIds(){
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(5);
+
+        List<Customer> customers = sqlSession.selectList("mybatisDemo1.mapper.Customer2.findCustomerByIds",list);
+
+        for (Customer customer : customers){
+            System.out.println(customer.toString());
+        }
+    }
+
+    @Test
+    public void findCustomerByName(){
+        Customer customer = new Customer();
+        customer.setUsername("o");
+
+        List<Customer> customers = sqlSession.selectList("mybatisDemo1.mapper.Customer2.findCustomerByName",customer);
+
+        for (Customer item : customers){
+            System.out.println(item.toString());
+        }
+    }
+}
+```
+## 案例4(一对一关联)<span id = "example4"></span>
+**一个人对应一张身份证。**
+IdCard.java 身份证。
+```java
+package mybatisDemo2.po;
+
+import lombok.Data;
+
+@Data
+public class IdCard {
+    private Integer id;
+    private String code;
+}
+```
+Person.java 人
+```java
+package mybatisDemo2.po;
+
+import lombok.Data;
+
+@Data
+public class Person {
+    private Integer id;
+    private String name;
+    private Integer age;
+    private String sex;
+    private IdCard idCard;
+}
+```
+IdCardMapper.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace表示命名空间(唯一)-->
+<mapper namespace="mybatisDemo2.mapper.IdCardMapper">
+    <!--根据ID查身份证信息-->
+    <select id="findIdCardById" parameterType="Integer" resultType="mybatisDemo2.po.IdCard">
+        select * from tb_idcard where id=#{id}
+    </select>
+</mapper>
+```
+PersonMapper.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace表示命名空间(唯一)-->
+<mapper namespace="mybatisDemo2.mapper.Person">
+    <!--嵌套查询，通过执行另一条SQL映射语句来返回预期的特殊类型-->
+    <select id="findPersonById" parameterType="Integer" resultMap="IdCardWithPersonResult">
+        select * from tb_person where id=#{id}
+    </select>
+    <resultMap id="IdCardWithPersonResult" type="mybatisDemo2.po.Person" >
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="age" column="age"/>
+        <result property="sex" column="sex"/>
+        <!--  一对一:association使用select属性引用另一条SQL语句 -->
+        <association property="idCard" column="card_id" javaType="mybatisDemo2.po.IdCard"
+        select="mybatisDemo2.mapper.IdCardMapper.findIdCardById"></association>
+    </resultMap>
+</mapper>
+```
+测试类
+```java
+package mybatisDemo2;
+
+import mybatisDemo2.po.IdCard;
+import mybatisDemo2.po.Person;
+import mybatisDemo2.utils.MybatisUtils;
+import org.apache.ibatis.session.SqlSession;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class Demo1 {
+
+    SqlSession sqlSession;
+
+    @Before
+    public void init(){
+        sqlSession = MybatisUtils.getSqlSession();
+    }
+
+    @After
+    public void end(){
+        sqlSession.close();
+    }
+
+    /**
+     * 嵌套查询
+     */
+    @Test
+    public void findPersonById(){
+        Person person = sqlSession.selectOne("mybatisDemo2.mapper.Person.findPersonById",1);
+        System.out.println(person.toString());
+    }
+}
+```
+控制台
+```
+DEBUG [main] - ==>  Preparing: select * from tb_person where id=? 
+DEBUG [main] - ==> Parameters: 1(Integer)
+DEBUG [main] - ====>  Preparing: select * from tb_idcard where id=? 
+DEBUG [main] - ====> Parameters: 1(Integer)
+DEBUG [main] - <====      Total: 1
+DEBUG [main] - <==      Total: 1
+Person(id=1, name=Rose, age=29, sex=女, idCard=IdCard(id=1, code=440301199612298610))
+
 ```
 # IDEA下Maven无法读取src的XML文件
 我们需要在pom.xml文件里面去配置一下，让项目启动的时候能够去读取到src/main/java下面的配置文件，如下，在pom.xml里面加入下面代码：
