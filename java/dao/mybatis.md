@@ -38,6 +38,7 @@
   - [案例2 (手动映射bean属性和字段名)](#案例2-手动映射bean属性和字段名span-id-example2span)
   - [案例3 (动态sql)](#案例3-动态sqlspan-id-example3span)
   - [案例4(一对一关联)](#案例4一对一关联span-id-example4span)
+  - [案例5(一对多、多对多)](#案例5一对多-多对多span-id-example5span)
 - [IDEA下Maven无法读取src的XML文件](#idea下maven无法读取src的xml文件)
 
 <!-- /code_chunk_output -->
@@ -784,7 +785,157 @@ DEBUG [main] - <====      Total: 1
 DEBUG [main] - <==      Total: 1
 Person(id=1, name=Rose, age=29, sex=女, idCard=IdCard(id=1, code=440301199612298610))
 ```
-## 案例5(一对多)<span id = "example5"></span>
+## 案例5(一对多、多对多)<span id = "example5"></span>
+User.java 用户bean
+```java
+package mybatisDemo2.po;
+
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+public class User {
+    //用户编号
+    private Integer id;
+    //用户姓名
+    private String username;
+    //用户地址
+    private String address;
+    //用户关联的订单
+    private List<Orders> ordersList;
+}
+```
+Orders.java 订单bean
+```java
+package mybatisDemo2.po;
+
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+public class Orders {
+    private Integer id;
+    private String number;
+    //关联商品集合信息、
+    private List<Product> productList;
+}
+```
+Product.java 商品bean
+```java
+@Data
+public class Product {
+    private Integer id;
+    private String name;
+    private Double price;
+}
+```
+tb_user表
+![](./img/db1.png)<br>
+tb_orders表
+![](./img/db2.png)<br>
+tb_product表
+![](./img/db3.png)<br>
+tb_ordersitem中间表
+![](./img/db4.png)<br>
+
+UserMapper.xml
+```xml
+<!--namespace表示命名空间(唯一)-->
+<mapper namespace="mybatisDemo2.mapper.User">
+    <!-- 一对多:查看某一用户及其关联的订单信息
+        注意:当关联查询出的列名相同时，需使用别名-->
+    <select id="findUserWithOrders" parameterType="Integer" resultMap="UserWithOrdersResult">
+        select u.*,o.id as orders_id,o.number from  tb_user u,tb_orders o where u.id=o.user_id and u.id=#{id}
+    </select>
+    <resultMap id="UserWithOrdersResult" type="mybatisDemo2.po.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username" />
+        <result property="address" column="address" />
+        <!-- 一对多关联映射：collection  ofType表示属性集合中的元素类型 -->
+        <collection property="ordersList" ofType="mybatisDemo2.po.Orders">
+            <id property="id" column="orders_id" />
+            <result property="number" column="number" />
+        </collection>
+    </resultMap>
+</mapper>
+```
+ProductMapper.xml
+```xml
+<!--namespace表示命名空间(唯一)-->
+<mapper namespace="mybatisDemo2.mapper.Product">
+    <select id="findProductById" parameterType="Integer" resultType="mybatisDemo2.po.Product">
+        select * from tb_product where id in(
+            select product_id from tb_ordersitem where orders_id=#{id}
+        )
+    </select>
+</mapper>
+```
+OrdersMapper.xml
+```xml
+<!--namespace表示命名空间(唯一)-->
+<mapper namespace="mybatisDemo2.mapper.Orders">
+    <!--多对多嵌套查询:通过执行另外一条SQL映射语句来返回预期的特殊类型-->
+    <select id="findOrdersWithProduct" parameterType="Integer" resultMap="OrdersWithProductResult">
+        select * from tb_orders where id=#{id}
+    </select>
+    <resultMap id="OrdersWithProductResult" type="mybatisDemo2.po.Orders">
+        <id property="id" column="id" />
+        <result property="number" column="number" />
+        <collection property="productList" column="id" ofType="mybatisDemo2.po.Product"
+            select="mybatisDemo2.mapper.Product.findProductById">
+        </collection>
+    </resultMap>
+
+    <!--多对多嵌套结果-->
+    <select id="findOrdersWithProduct2" parameterType="Integer" resultMap="OrdersWithProductResult2">
+        select o.*,p.id as pid,p.name,p.price
+        from tb_orders o,tb_product p,tb_ordersitem oi
+        where oi.orders_id = o.id
+        and oi.product_id = p.id
+        and o.id = 1
+    </select>
+    <!--自定义手动映射类型-->
+    <resultMap id="OrdersWithProductResult2" type="mybatisDemo2.po.Orders">
+        <id property="id" column="id" />
+        <result property="number" column="number" />
+        <collection property="productList" ofType="mybatisDemo2.po.Product">
+            <id property="id" column="pid" />
+            <result property="name" column="name" />
+            <result property="price" column="price" />
+        </collection>
+    </resultMap>
+</mapper>
+```
+测试类
+```java
+    /**
+     * 一对多嵌套结果
+     */
+    @Test
+    public void findUserWithOrders(){
+        User user = sqlSession.selectOne("mybatisDemo2.mapper.User.findUserWithOrders",1);
+        System.out.println(user.toString());
+    }
+    /**
+     * 多对多嵌套查询
+     */
+    @Test
+    public void findOrdersWithProduct(){
+        Orders orders = sqlSession.selectOne("mybatisDemo2.mapper.Orders.findOrdersWithProduct",1);
+        System.out.println(orders.toString());
+    }
+
+    /**
+     * 多对多嵌套结果
+     */
+    @Test
+    public void findOrdersWithProduct2(){
+        Orders orders = sqlSession.selectOne("mybatisDemo2.mapper.Orders.findOrdersWithProduct2",1);
+        System.out.println(orders.toString());
+    }
+```
 # IDEA下Maven无法读取src的XML文件
 我们需要在pom.xml文件里面去配置一下，让项目启动的时候能够去读取到src/main/java下面的配置文件，如下，在pom.xml里面加入下面代码：
 ```xml
