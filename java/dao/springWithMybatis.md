@@ -17,9 +17,9 @@
 
 # spring整合mybatis
 ## 导包
-![](./img/package1.png)
-![](./img/package2.png)
-![](./img/package3.png)
+![](./img/package1.png)<br>
+![](./img/package2.png)<br>
+![](./img/package3.png)<br>
 ## 配置文件
 ### mybatis-config.xml
 ```xml
@@ -103,8 +103,8 @@
 ```
 ## 具体实现
 ### 传统dao方式开发
-![](./img/ctdao1.png)
-![](./img/ctdao2.png)
+![](./img/ctdao1.png)<br>
+![](./img/ctdao2.png)<br>
 CustomerDao.java 接口
 ```java
 package springWithMybatis.dao;
@@ -167,9 +167,9 @@ public class DaoTest {
 }
 ```
 ### 基于MapperFactoryBean
-![](./img/smp1.png)
-![](./img/smp2.png)
-![](./img/smp3.png)
+![](./img/smp1.png)<br>
+![](./img/smp2.png)<br>
+![](./img/smp3.png)<br>
 CustomerMapper.java
 ```java
 package springWithMybatis.mapper;
@@ -236,10 +236,10 @@ public class DaoTest {
 }
 ```
 ### 基于MapperScannerConfigurer
-![](./img/msc1.png)
-![](./img/msc2.png)
-![](./img/msc3.png)
-![](./img/msc4.png)
+![](./img/msc1.png)<br>
+![](./img/msc2.png)<br>
+![](./img/msc3.png)<br>
+![](./img/msc4.png)<br>
 applicationContext.xml
 ```xml
     <!--Mapper代理开发(基于MapperScannerConfigurer)-->
