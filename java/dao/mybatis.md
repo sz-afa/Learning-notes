@@ -23,7 +23,7 @@
     - [<bind\>元素](#bind元素)
 - [Mybatis关联映射](#mybatis关联映射)
   - [一对一](#一对一)
-  - [一堆多](#一堆多)
+  - [一对多](#一对多)
   - [多对多](#多对多)
 - [LOG4J输出SQL语句](#log4j输出sql语句)
 - [SqlSessionFactory](#sqlsessionfactory)
@@ -150,7 +150,11 @@
 ![](./img/oneone2.png)<br>
 ![](./img/oneone3.png)<br>
 ## 一对多
+![](./img/onemore.png)<br>
+![](./img/onemore2.png)<br>
 ## 多对多
+![](./img/mm1.png)<br>
+![](./img/mm2.png)<br>
 # LOG4J输出SQL语句
 导包
 ```xml
@@ -779,8 +783,8 @@ DEBUG [main] - ====> Parameters: 1(Integer)
 DEBUG [main] - <====      Total: 1
 DEBUG [main] - <==      Total: 1
 Person(id=1, name=Rose, age=29, sex=女, idCard=IdCard(id=1, code=440301199612298610))
-
 ```
+## 案例5(一对多)<span id = "example5"></span>
 # IDEA下Maven无法读取src的XML文件
 我们需要在pom.xml文件里面去配置一下，让项目启动的时候能够去读取到src/main/java下面的配置文件，如下，在pom.xml里面加入下面代码：
 ```xml
