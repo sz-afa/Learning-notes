@@ -222,7 +222,7 @@ import springWithMybatis.po.Customer;
 import javax.annotation.Resource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:applicationContextWithMybatis.xml")
+@ContextConfiguration("classpath:applicationContext.xml")
 public class DaoTest {
 
     @Resource(name = "customerMapper")
