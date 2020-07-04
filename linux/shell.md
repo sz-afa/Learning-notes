@@ -12,6 +12,7 @@
   - [秒变计算器的运算符](#秒变计算器的运算符)
     - [整数](#整数)
     - [小数](#小数)
+  - [条件判断](#条件判断)
 - [处理海量数据的grep、cut、awk、sed 命令](#处理海量数据的grep-cut-awk-sed-命令)
   - [grep](#grep)
   - [cut](#cut)
@@ -144,6 +145,44 @@ eg: echo "1.2+1.3" | bc
 echo "scale=2;(0.2+0.3)/1" | bc     #计算出0.2+0.3的和并保留俩位小数，此时bc计算器会省略掉个位数的0
 echo "scale=2;(1.2+1.3)/1" | bc     #计算出1.2+1.3的和并保留俩位小数
 ```
+## 条件判断
+- 语法：[ 判断表达式 ]
+```
+文件（夹）或者路径：
+-e  目标是否存在（exist）
+-d  是否为路径（directory）
+-f  是否为文件（file）
+[ -e foer.sh ] || touch foer.sh 	#判断当前目录下是否有foer.sh这个文件，假如没有就创建出foer.sh文件
+```
+- 权限：
+```
+-r  是否有读取权限（read）
+-w  是否有写入权限（write）
+-x  是否有执行权限（excute）
+
+[ -x 123.txt ] && echo '有执行权限'
+```
+- 整数值（int型）：
+```
+-eq 等于（equal）
+-ne 不等于(not equal)
+-gt 大于（greater than）
+-lt 小于（lesser than）
+-ge 大于或者等于（greater or equal）
+-le 小于或者等于（lesser or equal）
+
+[ 9 -gt 8 ] && echo '9大于8'
+```
+- 小数（浮点型）：
+```
+[ `echo '1.2 < 1.3' | bc` -eq 1 ] && echo '小于'
+```
+- 字符串:
+```
+=    相等
+!=   不相等
+[ 'kkkkk' != 'kkkk' ] && echo '不等于'
+```
 # 处理海量数据的grep、cut、awk、sed 命令
 ## grep
 - grep应用场景：通常对数据进行 行的提取
@@ -193,7 +232,56 @@ echo "scale=2;(1.2+1.3)/1" | bc     #计算出1.2+1.3的和并保留俩位小数
     cut -c 2-9 /etc/passwd
 ```
 ## awk
+- awk的应用场景：通常对数据进行列的提取
+- 语法
+```
+语法1 awk '条件 {执行动作}' 文件名
+语法2 awk '条件1 {执行动作} 条件2 {执行动作}'
+语法3 awk '[选项] 条件1 {执行动作} 条件2 {执行动作}' 文件名
+```
+```
+    printf	#格式化输出，不会自动换行。
+            （%ns：字符串型，n代表有多少个字符； 
+            %ni：整型，n代表输出几个数字；
+            %.nf：浮点型，n代表的是小数点后有多少个小数
+            ）
 
+    print 	#打印出内容，默认会自动换行
+
+    \t  	#制表符
+    \n  	#换行符
+
+        eg：printf '%s\t%s\t%s\t%s\t%s\t%s\n' 1 2 3 4 5 6
+
+        eg：df -h |grep /dev/vda1 | awk '{printf "/dev/vda1的使用率是："} {print $5}'
+
+        小数：echo "scale=2; 0.13 + 0.1" | bc | awk '{printf "%.2f\n", $0}'
+
+    $1 		#代表第一列
+    $2 		#代表第二列
+    $0 		#代表一整行
+
+        eg： df -h | grep /dev/vda1 | awk '{print $5}'
+
+
+
+    -F 		#指定分割符
+        eg：cat /etc/passwd | awk -F":" '{print $1}'
+
+
+
+    BEGIN 	#在读取所有行内容前就开始执行，常常被用于修改内置变量的值
+    FS		#BEGIN时定义分割符
+
+        eg：cat /etc/passwd | awk 'BEGIN {FS=":"} {print $1}'
+
+    END 	#结束的时候 执行
+
+    NR 		#行号
+
+        eg：df -h | awk 'NR==2 {print $5}'
+            awk '(NR>=20 && NR<=30) {print $1}' /etc/passwd
+```
 ## sed
 - sed的应用场景：主要对数据进行处理（选取，新增，替换，删除，搜索）
 - sed语法：sed [选项][动作] 文件名
