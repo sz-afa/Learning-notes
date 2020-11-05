@@ -36,6 +36,11 @@
     - [删除文件](#删除文件)
     - [创建文件的权限掩码(待补充)](#创建文件的权限掩码待补充)
     - [调整文件大小](#调整文件大小)
+    - [访问目录](#访问目录)
+      - [1获取目录流](#1获取目录流)
+      - [2读取目录流](#2读取目录流)
+      - [3关闭目录流](#3关闭目录流)
+      - [4例子（遍历文件夹，打印文件名）](#4例子遍历文件夹打印文件名)
 
 <!-- /code_chunk_output -->
 # 标准IO
@@ -341,4 +346,72 @@ int truncate(const char *path, off_t length);
 length 大于 文件大小， 文件后面会填充空白字节或者空洞
 
 length 小于 文件大小， 文件多出的部分，会被舍弃
+```
+### 访问目录
+#### 1获取目录流
+```c
+ #include <sys/types.h>
+ #include <dirent.h>
+
+  DIR *opendir(const char *name);
+```
+DIR * : 目录流  本质上也是一个结构体地址 保存结构体信息，表示打开的目录
+#### 2读取目录流
+```c
+#include <dirent.h>
+
+  struct dirent *readdir(DIR *dirp);
+```
+返回值：成功返回 目录项（保存一个文件信息的结构体）指针，失败返回或者读到目录末尾NULL
+```c
+On Linux, the dirent structure is defined as follows:
+struct dirent {
+  ino_t          d_ino;       /* inode number */
+  off_t          d_off;       /* offset to the next dirent */
+  unsigned short d_reclen;    /* length of this record */
+  unsigned char  d_type;      /* type of file; not supported by all file system types */
+  char           d_name[256]; /* filename */
+};
+```
+#### 3关闭目录流
+```c
+#include <sys/types.h>
+#include <dirent.h>
+
+  int closedir(DIR *dirp);
+```
+#### 4例子（遍历文件夹，打印文件名）
+```c
+#include <stdlib.h>
+#include <stdio.h>
+#include <dirent.h>
+#include <sys/types.h>
+#include <dirent.h>
+
+int main(int argc,char *argv[])
+{
+    DIR *dirp;
+    struct dirent *dp;
+    if(argc!=2)
+    {
+        printf("usage: %s <dirname>\n",argv[0]);
+        return -1;
+    }
+
+    if( (dirp=opendir(argv[1])) ==NULL ){
+        perror("opendir");
+        return -1;
+    }
+
+    while((dp=readdir(dirp))!=NULL)
+    {
+        printf("%s\n",dp->d_name);
+    }
+
+    putchar(10);
+    closedir(dirp);
+
+    
+    return 0;
+}
 ```
