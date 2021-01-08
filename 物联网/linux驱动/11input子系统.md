@@ -18,7 +18,13 @@
       - [input_dev层](#input_dev层)
         - [作用](#作用-2)
 - [相关函数结构体](#相关函数结构体)
-  - [input_dev结构体](#input_dev结构体)
+  - [struct input_dev输入设备](#struct-input_dev输入设备)
+  - [input_allocate_device](#input_allocate_device)
+  - [注册注销 input_dev](#注册注销-input_dev)
+    - [注册](#注册)
+    - [注销](#注销)
+  - [上报数据](#上报数据)
+  - [struct input_event上报数据包](#struct-input_event上报数据包)
 - [实例](#实例)
 
 <!-- /code_chunk_output -->
@@ -65,7 +71,7 @@ open("/dev/input/event0"), read(fd, strcut input_event):strcut input_event是一
 - 硬件初始化
 - 知道如何获取硬件中的数据，但不知道如何把数据传给应用层
 # 相关函数结构体
-## input_dev结构体
+## struct input_dev输入设备
 ```c
 struct input_dev {
 	//辅助信息
@@ -86,4 +92,78 @@ struct input_dev {
 	struct device dev;
 }
 ```
+## input_allocate_device
+分配input_dev对象空间
+```c
+struct input_dev *input_allocate_device(void)
+```
+```c
+ret = input_register_device(inputdev);
+if(ret != 0){
+    printk(KERN_ERR "input_register_device error \n");
+    goto err_0;
+}
+```
+## 注册注销 input_dev
+### 注册
+```c
+int input_register_device(struct input_dev *dev)
+```
+```c
+ret = input_register_device(inputdev);
+if(ret != 0){
+    printk(KERN_ERR "input_register_device error \n");
+    goto err_0;
+}
+```
+### 注销
+```c
+void input_unregister_device(struct input_dev *dev)
+```
+## 上报数据
+一般写在中断里边
+```c
+  //功能：上报数据
+  void input_event(struct input_dev *dev, unsigned int type, unsigned int code, int value)
+  //参数1 ---- input_dev对象 
+  //参数2 ---- 设备类型
+  //参数3 ---- 上报的数据类型
+  //参数4 ---- 数据的值
+  
+  //功能：上报按键数据
+  static inline void input_report_key(struct input_dev *dev, unsigned int code, int value)
+  //参数1 ---- input_dev对象 
+  //参数2 ---- 上报的数据类型，KEY_DOWN KEY_UP等
+  //参数3 ---- 数据的值
+```
+```c
+static irqreturn_t key_irq_handler(int irq, void *dummy)
+{
+    int value;
+	printk("------------^_^ %s---------------------\n",__FUNCTION__);
+	value = gpio_get_value(S5PV210_GPH0(1));
+    // 2,上报数据
+	if(value){
+		//松开
+		input_event(inputdev,EV_KEY,KEY_DOWN,0);
+		input_sync(inputdev);
+	}else{
+		//按下
+		input_report_key(inputdev, KEY_DOWN, 1);
+		input_sync(inputdev);
+	}
+    return IRQ_HANDLED;
+}
+```
+## struct input_event上报数据包
+```c
+//上报的数据包
+struct input_event {
+  struct timeval time;
+  __u16 type;		//设备类型
+  __u16 code;		//数据类型
+  __s32 value;	//数据的值
+};
+```
+
 # 实例
