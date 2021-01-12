@@ -130,7 +130,7 @@ uint8_t  IIC_waitACK(void)
 	SCL_LOW; //SCL为低电平，SDA数据无效
 	IIC_Sdain();//将SDA设置成输入模式	，这里需要读SDA线的电平
 
-	SCL_HIGH;  //SDA设置成高电平，使SDA线上的数据有效
+	SCL_HIGH;  //SCL设置成高电平，使SDA线上的数据有效
 	SysTicks_DelayNus(5);//延时5us	
 	while(SDA_READ)//等待SDA线上的低电平，由接收方发送
 	{
@@ -247,34 +247,36 @@ void At24c02_WriteByteData(uint8_t addr,uint8_t data)
 ```
 ### 读数据
 ```c
-uint8_t  IIC_RxByteData(uint8_t ackflag)
+uint8_t At24c02_ReadByteData(uint8_t addr)
 {
-	uint8_t i,data;
-	SCL_LOW;  //SCL为低电平，SDA数据无效
-	IIC_Sdain();//将SDA设置成输入模式	，这里需要读SDA线的电平
+	uint8_t data;
 
-	for(i=0;i<8;i++) //一个字节的数据，因为IIC是串行通信的，只能一个一个位的数据接收，所以一个字节的数据需要八次才能接收完
+	IIC_start();         //起始信号
+
+	IIC_SendByteData(0XA0); //发送设备地址
+	if(ACK !=IIC_waitACK()) //等待接收方回应
 	{
-		data=data<<1;  //首先左移，如果放在后面，最后接收的数据会整体左移，所以要放前面
-		SCL_HIGH;      //SCL为高，使SDA上的数据有效
-		if(SDA_READ)   //读SDA的数据，如果为高，则或0x01
-		{
-			data=data|0x01;
-		}
-		SysTicks_DelayNus(5);//延时5us	
-		SCL_LOW; //拉低SCL，使SDA上的数据无效，然后再去改变SDA
-		SysTicks_DelayNus(5);
+		IIC_stop();
+		return 0xff;
 	}
-	SCL_LOW;	
-	if(ackflag==ACK)    //判断发送非应答信号，还是应答信号
+
+	IIC_SendByteData(addr);//发送要在设备中读出的内存单元地址
+	if(ACK !=IIC_waitACK())//等待接收方回应
 	{
-		IIC_sendack();
+		IIC_stop();
+		return 0xff;
 	}
-	else
+
+	IIC_start();//起始信号
+	IIC_SendByteData(0XA1);  //发送写命令
+	if(ACK !=IIC_waitACK())  //等待接收方回应
 	{
-		IIC_sendNoack();
+		IIC_stop();
+ 		return 0xff;
 	}
-	return  data;   //接收到的数据返回
+
+	data=IIC_RxByteData(noACK); //将接收方返回的数据存起来
+	IIC_stop();                  //停止IIC
+	return data;                 //将数据返回
 }
-
 ```

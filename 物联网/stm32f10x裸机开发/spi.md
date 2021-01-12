@@ -19,9 +19,9 @@
 # 概述
 摩托罗拉开发的全双工同步通信协议。<br>stm32中高低位先行可自定义，字长可选（8、16）。<br>四线通信，多主。
 ## 通讯线
-SCK: Serial Clock 串行时钟（主机发出）
-MOSI : Master Output, Slave Input 主发从收
-MISO : Master Input, Slave Output 主收从发
+SCK: Serial Clock 串行时钟（主机发出）<br>
+MOSI : Master Output, Slave Input 主发从收<br>
+MISO : Master Input, Slave Output 主收从发<br>
 NSS ： 可选硬件控制或者软件控制 控制从设备使能。
 
 ## SPI中断
