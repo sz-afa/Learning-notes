@@ -136,4 +136,4 @@ ffmpeg -f video4linux2 -s 320x240 -i /dev/video0 /tmp/test.avi
 ```
 video4linux2 代表使用V4L2协议
 /dev/video0代表摄像头设备 
-/mnt/tmp/test.avi代表输出路径
+/tmp/test.avi代表输出路径

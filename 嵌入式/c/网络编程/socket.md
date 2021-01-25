@@ -4,18 +4,121 @@
 <!-- code_chunk_output -->
 
 - [udp](#udp)
-  - [广播](#广播)
-    - [案例](#案例)
+  - [单播](#单播)
+    - [流程](#流程)
+    - [例子](#例子)
       - [发](#发)
       - [收](#收)
+  - [广播](#广播)
+    - [例子](#例子-1)
+      - [发](#发-1)
+      - [收](#收-1)
   - [组播](#组播)
 - [tcp](#tcp)
+- [unix域通信](#unix域通信)
 
 <!-- /code_chunk_output -->
 
 # udp
+## 单播
+### 流程
+|客户端|服务端|
+|:----|:----|
+|socket()|socket()|
+|bind()|bind()|
+|sendto()/recvfrom()|sendto()/recvfrom()|
+|close()|close()|
+### 例子
+#### 发
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/types.h>          /* See NOTES */
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+
+int main(void)
+{
+	int fd=socket(AF_INET,SOCK_DGRAM,0);
+	if(fd<0)
+	{
+		perror("socket");
+		exit(1);
+	}
+	
+	struct sockaddr_in clientaddr;
+	clientaddr.sin_family=AF_INET;
+	clientaddr.sin_port=htons(10000);
+	clientaddr.sin_addr.s_addr=inet_addr("192.168.90.3");
+	int ret=bind(fd,(struct sockaddr *)&clientaddr,sizeof(clientaddr));
+	if(ret<0)
+	{
+		perror("bind");
+		exit(1);
+	}
+	
+	char buf[20];
+	struct sockaddr_in serveraddr;
+	serveraddr.sin_family=AF_INET;
+	serveraddr.sin_port=htons(10001);
+	serveraddr.sin_addr.s_addr=inet_addr("192.168.90.3");
+	
+	while(1)
+	{
+		scanf("%s",buf);
+		sendto(fd,buf,strlen(buf),0,(struct sockaddr *)&serveraddr,sizeof(serveraddr));
+	}
+	return 0;
+}
+```
+#### 收
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/types.h>          /* See NOTES */
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+int main(void)
+{
+	int fd=socket(AF_INET,SOCK_DGRAM,0);
+	if(fd<0)
+	{
+		perror("socket");
+		exit(1);
+	}
+	
+	struct sockaddr_in serveraddr;
+	serveraddr.sin_family=AF_INET;
+	serveraddr.sin_port=htons(10001);
+	serveraddr.sin_addr.s_addr=inet_addr("192.168.90.3");
+	int ret=bind(fd,(struct sockaddr *)&serveraddr,sizeof(serveraddr));
+	if(ret<0)
+	{
+		perror("bind");
+		exit(1);
+	}
+	
+	char buf[20]={};
+	
+	while(1)
+	{
+		recvfrom(fd,buf,sizeof(buf),0,NULL,NULL);
+		printf("%s\n",buf);
+		
+	}
+	return 0;
+}
+```
 ## 广播
-### 案例
+### 例子
 #### 发
 ```c
 #include <stdio.h>
@@ -43,7 +146,7 @@ int main(void)
     struct sockaddr_in dest_addr;
     dest_addr.sin_family = AF_INET; //ipv4
     dest_addr.sin_port=htons(10000);
-    dest_addr.sin_addr.s_addr = inet_addr("192.168.50gc.255");
+    dest_addr.sin_addr.s_addr = inet_addr("192.168.50.255");
 
     //设置socket为广播
     int on = 1;
