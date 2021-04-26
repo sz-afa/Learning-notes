@@ -103,9 +103,9 @@
 ### 4Promise.race
 ```javascript
 {
-    const imgURL1 = 'https://file.xdclass.net/xdclass/xdclass_logo.png'
-    const imgURL2 = 'https://file.xdclass.net/video/2020-12%20%E5%AE%98%E7%BD%91%E8%B6%85100k%E4%B8%BB%E5%9B%BE%E6%9B%B4%E6%96%B0/%E4%B8%BB%E5%9B%BE/36-es.jpg'
-    const imgURL3 = 'https://xdvideo-file.oss-cn-shenzhen.aliyuncs.com/video/%E5%AE%98%E7%BD%91%E8%BD%AE%E6%92%AD%E5%9B%BE/2020%E5%B9%B412%E6%9C%88/lbt-yzx.jpeg'
+    const imgURL1 = 'https://xxxlogo.png'
+    const imgURL2 = 'https://xxx.jpg'
+    const imgURL3 = 'https://xxx.jpeg'
 
     function getImage(url){
         return new Promise((resolve, reject)=>{
